@@ -31,10 +31,10 @@
     <!-- <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB8B04MTIk7abJDVESr6SUF6f3Hgt1DPAY&callback=initMap"></script> -->
     <script src="<?= base_url('js/web.js'); ?>"></script>
     <script type="text/javascript">
-     var jsonData = <?php echo $json;?>
+    //  var jsonData = <?php //echo $json;?>
     </script>
     <script type="text/javascript">
-     var digi = <?php echo $digitasi;?>
+    //  var digi = <?php //echo $digitasi;?>
     </script>
 </head>
 

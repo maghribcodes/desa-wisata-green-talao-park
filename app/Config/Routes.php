@@ -44,15 +44,26 @@ $routes->get('/register', 'Home::register');
 
 $routes->group('web', function ($routes) {
     $routes->get('/', 'Home::web');
-    $routes->get('attraction', 'Home::attraction');
-    $routes->get('object', 'Home::object');
-    $routes->get('object/detail', 'Home::objectDetail');
 
     $routes->group('profile', function ($routes) {
         $routes->get('/', 'Home::profile');
         $routes->get('update', 'Home::update');
         $routes->get('changePassword', 'Home::changePassword');
     });
+});
+
+// App
+$routes->group('web', ['namespace' => 'App\Controllers\Web'], function ($routes) {
+    $routes->presenter('attraction');
+
+    // Profile
+});
+
+// API
+$routes->group('api', ['namespace' => 'App\Controllers\Api'], function ($routes) {
+    $routes->post('village', 'Village::getData');
+    $routes->resource('attraction');
+    $routes->post('attraction/findByRadius', 'Attraction::findByRadius');
 });
 
 /*

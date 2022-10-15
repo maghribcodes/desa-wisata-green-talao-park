@@ -169,14 +169,14 @@
             <div class="row g-4">
                 <div class="col-md-6 col-lg-6 text-center wow fadeIn" data-wow-delay="0.1s">
                     <img src="media/photos/landing-page/trophy.png" alt="" style="filter: invert(100%); max-width: 4em" class="mb-3">
+                    <h1 class="text-white mb-2" data-toggle="counter-up">300</h1>
+                    <p class="text-white mb-0">Besar ADWI 2021</p>
+                </div>
+                <div class="col-md-6 col-lg-6 text-center wow fadeIn" data-wow-delay="0.3s">
+                    <img src="media/photos/landing-page/trophy.png" alt="" style="filter: invert(100%); max-width: 5em">
                     <h1 class="text-white mb-2" data-toggle="counter-up">50</h1>
                     <p class="text-white mb-0">Besar ADWI 2022</p>
                 </div>
-                <!--<div class="col-md-6 col-lg-6 text-center wow fadeIn" data-wow-delay="0.3s">
-                    <img src="media/photos/landing-page/rumah-gadang.png" alt="" style="filter: invert(100%); max-width: 5em">
-                    <h1 class="text-white mb-2" data-toggle="counter-up">70</h1>
-                    <p class="text-white mb-0">Rumah Gadang</p>
-                </div>-->
             </div>
         </div>
     </div>
@@ -217,7 +217,7 @@
             <div class="copyright">
                 <div class="row">
                     <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                        &copy; <a class="border-bottom" href="#">Rahmat Hanafi</a>, All
+                        &copy; <a class="border-bottom" href="#"></a>All
                         Right Reserved.
                     </div>
                 </div>
