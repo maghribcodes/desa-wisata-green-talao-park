@@ -5,7 +5,7 @@
 <section class="section"">
     <div class=" row">
     <!--map-->
-    <div class="col-md-7 col-12">
+    <div class="col-md-8 col-12">
         <div class="card">
             <div class="card-header">
                 <div class="row align-items-center">
@@ -15,11 +15,11 @@
                     <?= $this->include('web/layouts/map-head'); ?>
                 </div>
             </div>
-            <?= $this->include('web/layouts/map-body'); ?>
+            <?= $this->include('web/layouts/map-body-2'); ?>
         </div>
     </div>
 
-    <div class="col-md-5 col-12">
+    <div class="col-md-4 col-12">
         <div class="row">
             <!-- List Object -->
             <div class="col-12" id="list-rg-col">

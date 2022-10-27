@@ -2,10 +2,17 @@
 
 namespace App\Controllers;
 
+use App\Models\VillageModel;
+
 class Home extends BaseController
 {
+    protected $villageModel;
+
+    protected $helpers = ['auth', 'url', 'filesystem'];
+
     public function __construct()
     {
+        $this->villageModel = new VillageModel();
     }
 
     public function index()
@@ -41,11 +48,24 @@ class Home extends BaseController
 
     public function web()
     {
+        $contents = $this->villageModel->get_gtp()->getResultArray();
         $data = [
-            'title' => 'Home'
+            'title' => 'Home',
+            'data' => $contents
         ];
 
         return view('web/home', $data);
+    }
+
+    public function web2()
+    {
+        $contents = $this->villageModel->get_gtp()->getResultArray();
+        $data = [
+            'title' => 'Ulakan',
+            'data' => $contents
+        ];
+
+        return view('web/nagari', $data);
     }
 
     public function profile()

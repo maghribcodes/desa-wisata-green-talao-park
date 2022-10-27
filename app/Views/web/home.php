@@ -19,14 +19,14 @@
             </div>
         </div>
 
-        
+
         <div class="col-md-4 col-12">
             <div class="row">
                 <!--Home-->
                 <div class="col-12" id="list-rec-col">
                     <div class="card">
                         <div class="card-header">
-                            <h5 class="card-title text-center">Home</h5>
+                            <h5 class="card-title text-center">GTP Ulakan</h5>
                         </div>
                         <div class="card-body">
                             <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
@@ -41,7 +41,7 @@
                                             <img src="<?= base_url('media/photos'); ?>/1.jpg" class="d-block w-100" alt="" onclick="">
                                         </a>
                                         <div class="carousel-caption d-none d-md-block">
-                                            <h5>Object 1</h5>
+                                            <h5>Gerbang Masuk</h5>
                                         </div>
                                     </div>
                                     <div class="carousel-item">
@@ -49,7 +49,7 @@
                                             <img src="<?= base_url('media/photos'); ?>/2.jpg" class="d-block w-100" alt="" onclick="">
                                         </a>
                                         <div class="carousel-caption d-none d-md-block">
-                                            <h5>Object 2</h5>
+                                            <h5>Tampak Depan 1</h5>
                                         </div>
                                     </div>
                                     <div class="carousel-item">
@@ -57,7 +57,7 @@
                                             <img src="<?= base_url('media/photos'); ?>/3.jpg" class="d-block w-100" alt="" onclick="">
                                         </a>
                                         <div class="carousel-caption d-none d-md-block">
-                                            <h5>Object 3</h5>
+                                            <h5>Tampak Depan 2</h5>
                                         </div>
                                     </div>
                                 </div>
@@ -69,6 +69,49 @@
                                     <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                     <span class="visually-hidden">Next</span>
                                 </a>
+                            </div>
+                            <br>
+                            <div>
+                                <?php if (isset($data)) : ?>
+                                    <?php foreach ($data as $item) : ?>
+                                        <div class="row">
+                                            <div class="col table-responsive">
+                                                <table class="table table-borderless">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td class="fw-bold">Name</td>
+                                                            <td><?= esc($item['name']); ?></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="fw-bold">Type of Tourism</td>
+                                                            <td><?= esc($item['type_of_tourism']); ?></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="fw-bold">Address</td>
+                                                            <td><?= esc($item['address']); ?></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="fw-bold">Open</td>
+                                                            <td><?= esc($item['open']); ?></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="fw-bold">Close</td>
+                                                            <td><?= esc($item['close']); ?></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="fw-bold">Ticket Price</td>
+                                                            <td><?= 'Rp ' . number_format(esc($item['ticket_price']), 0, ',', '.'); ?></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="fw-bold">Contact Person</td>
+                                                            <td><?= esc($item['contact_person']); ?></td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -91,4 +134,3 @@
     $('#result-nearby-col').hide();
 </script>
 <?= $this->endSection() ?>
-

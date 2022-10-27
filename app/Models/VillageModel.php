@@ -7,10 +7,13 @@ use CodeIgniter\Model;
 class VillageModel extends Model
 {
     protected $DBGroup          = 'default';
-    protected $table            = 'village';
+    protected $table            = 'gtp';
     protected $primaryKey       = 'id';
     protected $returnType       = 'array';
-    protected $allowedFields    = ['id', 'name', 'geom'];
+    protected $allowedFields    = [
+        'id', 'name', 'type_of_tourism', 'address', 'open', 'close', 'ticket_price',
+        'contact_person', 'description', 'geom'
+    ];
 
     // Dates
     protected $useTimestamps = false;
@@ -27,7 +30,7 @@ class VillageModel extends Model
         $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
         $query = $this->db->table($this->table)
             ->select("id, name, {$coords}")
-            ->where('id', 'V0001')
+            ->where('id', 'U0001')
             ->get();
         return $query;
     }
@@ -37,7 +40,14 @@ class VillageModel extends Model
         $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
         $query = $this->db->table($this->table)
             ->select("id, name, {$coords}")
-            ->where('id', 'V0002')
+            ->where('id', 'GTP01')
+            ->get();
+        return $query;
+    }
+
+    public function get_gtp()
+    {
+        $query = $this->db->table($this->table)
             ->get();
         return $query;
     }

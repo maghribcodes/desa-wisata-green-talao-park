@@ -54,7 +54,7 @@
         <div class="collapse navbar-collapse py-4 py-lg-0" id="navbarCollapse">
             <div class="navbar-nav ms-auto">
                 <a href="#home" class="nav-item nav-link active">Home</a>
-                <a href="/web" class="nav-item nav-link">Explore</a>
+                <!-- <a href="/web" class="nav-item nav-link">Explore</a> -->
                 <a href="#about" class="nav-item nav-link">About</a>
                 <a href="#award" class="nav-item nav-link">Award</a>
             </div>
@@ -72,10 +72,11 @@
                         Welcome to
                     </h2>
                     <h1 class="display-4 text-light mb-5">
-                        Desa Wisata<br>Green Talao Park<br>Nagari Ulakan
+                        Desa Wisata<br>Green Talao Park<br>(GTP) Ulakan
                     </h1>
                     <div class="d-flex align-items-center pt-4 animated slideInDown">
-                        <a href="/web" class="btn btn-primary py-sm-3 px-3 px-sm-5 me-5">Explore</a>
+                        <a href="/web" class="btn btn-primary py-sm-3 px-3 px-sm-3 me-4">Explore GTP</a>
+                        <a href="/webnagari" class="btn btn-primary py-sm-3 px-3 px-sm-3 me-4">Explore Nagari</a>
                         <button type="button" class="btn-play" data-bs-toggle="modal" data-src="<?= base_url('media/videos/landing_page.mp4'); ?>" data-bs-target="#videoModal">
                             <span></span>
                         </button>
@@ -127,23 +128,20 @@
                     <p><span class="text-primary me-2">#</span>Welcome To Desa Wisata </p>
                     <h1 class="display-5 mb-4">
                         Why You Should Visit
-                        Desa Wisata <br><span class="text-primary">Green Talao Park Nagari Ulakan</span>
+                        Desa Wisata <br><span class="text-primary">GTP Ulakan</span>
                     </h1>
                     <p class="mb-4">
                         Nagari ulakan, secara geografis memiliki potensi alam pesisir pantai dengan estuarianya atau dalam bahasa lokal dinamai talao,
                         berhasil menyulap lahan tidur seluas 15 hektar menjadi sebuah destinasi desa wisata dengan konsep community based ecotourism.
                         Kawasan ini diberi nama Green Talao Park dengan mengusung tema ekowisata dan edukasi dengan keunikan daya tarik, berupa
-                        treking talao/mangrove sepanjang 1,8 km yang merupakan treking terpanjang di Sumatera Barat.
-                        Tak hanya sebagai tempat rekreasi, Green Talao Park juga menyajikan berbagai paket wisata,
+                        tracking talao/mangrove sepanjang 1,8 km yang merupakan treking terpanjang di Sumatera Barat.
+                        Tak hanya sebagai tempat rekreasi, Green Talao Park juga menyajikan berbagai event dan paket wisata,
                         mulai dari paket kearifan lokal, konservasi, landscape alam, wisata pulau serta wisata kuliner.
-                        Selain itu, nagari ulakan juga merupakan pusat pariwisata religi di sumatera barat melalui situs budaya non benda yang diberikan oleh pemerintah,
-                        yaitu makam Syekh Burhanudin, seorang ulama besar penyiar agama islam di ranah minang.
+                        Selain itu, kawasan ini juga terintegrasi langsung dengan pusat pariwisata religi di sumatera barat melalui situs budaya non benda yang diberikan oleh pemerintah,
+                        yaitu makam Syekh Burhanudin, seorang ulama besar penyiar agama islam di ranah minang dan kawasan Taman Wisata Pulau (TWP) Pieh.
                     </p>
                     <h5 class="mb-3">
                         <i class="far fa-check-circle text-primary me-3"></i>Wisata Alam
-                    </h5>
-                    <h5 class="mb-3">
-                        <i class="far fa-check-circle text-primary me-3"></i>Wisata Kuliner
                     </h5>
                     <h5 class="mb-3">
                         <i class="far fa-check-circle text-primary me-3"></i>Wisata Budaya
@@ -151,7 +149,10 @@
                     <h5 class="mb-3">
                         <i class="far fa-check-circle text-primary me-3"></i>Wisata Edukasi
                     </h5>
-                    <a class="btn btn-primary py-3 px-5 mt-3" href="/web">Explore</a>
+                    <h5 class="mb-3">
+                        <i class="far fa-check-circle text-primary me-3"></i>Wisata Kuliner
+                    </h5>
+                    <!-- <a class="btn btn-primary py-3 px-5 mt-3" href="/web">Explore GTP</a> -->
                 </div>
                 <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.5s">
                     <div class="img-border">
@@ -206,7 +207,7 @@
                 <div class="col-lg-3 col-md-6">
                     <h5 class="text-light mb-4">Links</h5>
                     <a class="btn btn-link" href="#home">Home</a>
-                    <a class="btn btn-link" href="/web">Explore</a>
+                    <!-- <a class="btn btn-link" href="/web">Explore</a> -->
                     <a class="btn btn-link" href="#about">About</a>
                     <a class="btn btn-link" href="#award">Award</a>
                     <a class="btn btn-link" href="<?= base_url('login'); ?>">Login</a>
@@ -217,7 +218,7 @@
             <div class="copyright">
                 <div class="row">
                     <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                        &copy; <a class="border-bottom" href="#"></a>All
+                        &copy; <a class="border-bottom" href="#">Novisa Ardewati</a>. All
                         Right Reserved.
                     </div>
                 </div>

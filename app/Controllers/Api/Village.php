@@ -4,16 +4,19 @@ namespace App\Controllers\Api;
 
 use App\Controllers\BaseController;
 use App\Models\VillageModel;
+use App\Models\AttractionModel;
 use CodeIgniter\API\ResponseTrait;
 
 class Village extends BaseController
 {
     use ResponseTrait;
     protected $villageModel;
+    protected $attractionModel;
 
     public function __construct()
     {
         $this->villageModel = new VillageModel();
+        $this->attractionModel = new AttractionModel();
     }
 
     public function getData()
@@ -41,7 +44,7 @@ class Village extends BaseController
                 ]
             ];
             return $this->respond($response);
-        } elseif ($village == 'V0002') {
+        } elseif ($village == 'GTP01') {
             $vilProperty = $this->villageModel->get_desa_wisata_api()->getRowArray();
             $geoJson = json_decode($this->villageModel->get_geoJson_api($village)->getRowArray()['geoJson']);
             $content = [

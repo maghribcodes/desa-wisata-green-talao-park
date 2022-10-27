@@ -52,9 +52,15 @@ $routes->group('web', function ($routes) {
     });
 });
 
+$routes->group('webnagari', function ($routes) {
+    $routes->get('/', 'Home::web2');
+});
+
 // App
 $routes->group('web', ['namespace' => 'App\Controllers\Web'], function ($routes) {
     $routes->presenter('attraction');
+    $routes->presenter('event');
+    $routes->presenter('package');
 
     // Profile
 });
@@ -62,8 +68,11 @@ $routes->group('web', ['namespace' => 'App\Controllers\Web'], function ($routes)
 // API
 $routes->group('api', ['namespace' => 'App\Controllers\Api'], function ($routes) {
     $routes->post('village', 'Village::getData');
+    $routes->post('attraction', 'Attraction::getData');
     $routes->resource('attraction');
     $routes->post('attraction/findByRadius', 'Attraction::findByRadius');
+    $routes->resource('event');
+    $routes->resource('package');
 });
 
 /*

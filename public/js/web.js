@@ -52,11 +52,11 @@ function setBaseUrl(url) {
 }
 
 // Initialize and add the map
-function initMap(lat = -0.7106133793157127, lng = 100.19519243888361) {
+function initMap(lat = -0.7102134517843606, lng = 100.19420485758688) {
     directionsService = new google.maps.DirectionsService();
     const center = new google.maps.LatLng(lat, lng);
     map = new google.maps.Map(document.getElementById("googlemaps"), {
-        zoom: 15,
+        zoom: 17,
         center: center,
         mapTypeId: 'roadmap',
     });
@@ -68,6 +68,12 @@ function initMap(lat = -0.7106133793157127, lng = 100.19519243888361) {
     digitVillage();
 }
 
+function initMap2() {
+    initMap();
+    digitAttraction1();
+    digitAttraction2();
+}
+
 // Display tourism village digitizing
 function digitVillage() {
     const village = new google.maps.Data();
@@ -75,7 +81,7 @@ function digitVillage() {
         url: baseUrl + '/api/village',
         type: 'POST',
         data: {
-            village: 'V0001'
+            village: 'GTP01'
         },
         dataType: 'json',
         success: function (response) {
@@ -301,7 +307,7 @@ function objectInfoWindow(id){
                 let name = data.name;
                 let lat = data.lat;
                 let lng = data.lng;
-                let price = (data.price == 0) ? 'Free' : 'Rp ' + data.price;
+                // let price = (data.price == 0) ? 'Free' : 'Rp ' + data.price;
                 // let open = data.open.substring(0, data.open.length - 3);
                 // let close = data.close.substring(0, data.close.length - 3);
 
@@ -309,7 +315,7 @@ function objectInfoWindow(id){
                     '<div class="text-center">' +
                     '<p class="fw-bold fs-6">'+ name +'</p> <br>' +
                     // '<p><i class="fa-solid fa-clock me-2"></i> '+open+' - '+close+' WIB</p>' +
-                    '<p><i class="fa-solid fa-money-bill me-2"></i> '+ price +'</p>' +
+                    // '<p><i class="fa-solid fa-money-bill me-2"></i> '+ price +'</p>' +
                     '</div>';
                 contentButton =
                     '<br><div class="text-center">' +
@@ -327,20 +333,6 @@ function objectInfoWindow(id){
             }
         });
     } else if (id.substring(0,2) === "EV") {
-        const months = [
-            'January',
-            'February',
-            'March',
-            'April',
-            'May',
-            'June',
-            'July',
-            'August',
-            'September',
-            'October',
-            'November',
-            'December'
-        ];
         $.ajax({
             url: baseUrl + '/api/event/' + id,
             dataType: 'json',
@@ -350,17 +342,17 @@ function objectInfoWindow(id){
                 let name = data.name;
                 let lat = data.lat;
                 let lng = data.lng;
-                let ticket_price = (data.ticket_price == 0) ? 'Free' : 'Rp ' + data.ticket_price;
-                let category = data.category;
-                let date_next = new Date(data.date_next);
-                let next = date_next.getDate() + ' ' + months[date_next.getMonth()] + ' ' + date_next.getFullYear();
+                // let ticket_price = (data.ticket_price == 0) ? 'Free' : 'Rp ' + data.ticket_price;
+                // let category = data.category;
+                // let date_next = new Date(data.date_next);
+                // let next = date_next.getDate() + ' ' + months[date_next.getMonth()] + ' ' + date_next.getFullYear();
 
                 content =
                     '<div class="text-center">' +
                     '<p class="fw-bold fs-6">'+ name +'</p> <br>' +
-                    '<p><i class="fa-solid fa-layer-group me-2"></i> '+ category +'</p>' +
-                    '<p><i class="fa-solid fa-money-bill me-2"></i> '+ ticket_price +'</p>' +
-                    '<p><i class="fa-solid fa-calendar-days me-2"></i> '+ next +'</p>' +
+                    // '<p><i class="fa-solid fa-layer-group me-2"></i> '+ category +'</p>' +
+                    // '<p><i class="fa-solid fa-money-bill me-2"></i> '+ ticket_price +'</p>' +
+                    // '<p><i class="fa-solid fa-calendar-days me-2"></i> '+ next +'</p>' +
                     '</div>';
                 contentButton =
                     '<br><div class="text-center">' +
@@ -377,6 +369,36 @@ function objectInfoWindow(id){
                 }
             }
         });
+    } else if (id.substring(0,1) === "P") {
+        $.ajax({
+            url: baseUrl + '/api/package/' + id,
+            dataType: 'json',
+            success: function (response) {
+                let data = response.data;
+                let paid = data.id;
+                let name = data.name;
+                let lat = data.lat;
+                let lng = data.lng;
+
+                content =
+                    '<div class="text-center">' +
+                    '<p class="fw-bold fs-6">'+ name +'</p> <br>' +
+                    '</div>';
+                contentButton =
+                    '<br><div class="text-center">' +
+                    '<a title="Route" class="btn icon btn-outline-primary mx-1" id="routeInfoWindow" onclick="routeTo('+lat+', '+lng+')"><i class="fa-solid fa-road"></i></a>' +
+                    '<a title="Info" class="btn icon btn-outline-primary mx-1" target="_blank" id="infoInfoWindow" href='+baseUrl+'/web/event/'+paid+'><i class="fa-solid fa-info"></i></a>' +
+                    '<a title="Nearby" class="btn icon btn-outline-primary mx-1" id="nearbyInfoWindow" onclick="openNearby(`'+ paid +'`,'+ lat +','+ lng +')"><i class="fa-solid fa-compass"></i></a>' +
+                    '</div>'
+
+                if (currentUrl.includes(id)) {
+                    infoWindow.setContent(content);
+                    infoWindow.open(map, markerArray[paid])
+                } else {
+                    infoWindow.setContent(content + contentButton);
+                }
+            }
+        }); 
     } else if (id.substring(0,2) === "CP") {
         $.ajax({
             url: baseUrl + '/api/culinaryPlace/' + id,
@@ -393,7 +415,8 @@ function objectInfoWindow(id){
                 infoWindow.setContent(content);
             }
         });
-    } else if (id.substring(0,2) === "WP") {
+    }  
+    else if (id.substring(0,2) === "WP") {
         $.ajax({
             url: baseUrl + '/api/worshipPlace/' + id,
             dataType: 'json',
@@ -426,6 +449,57 @@ function objectInfoWindow(id){
             }
         });
     }
+}
+
+// Display tourism attraction digitizing
+// Tracking Mangrove
+function digitAttraction1() {
+    const attraction = new google.maps.Data();
+    $.ajax({
+        url: baseUrl + '/api/attraction',
+        type: 'POST',
+        data: {
+            attraction: 'A0001'
+        },
+        dataType: 'json',
+        success: function (response) {
+            const data = response.data;
+            attraction.addGeoJson(data);
+            attraction.setStyle({
+                fillColor:'#ff0000',
+                strokeWeight:3,
+                strokeColor:'#ff0000',
+                fillOpacity: 1,
+                clickable: false
+            });
+            attraction.setMap(map);
+        }
+    });
+}
+
+// Estuaria/Talao
+function digitAttraction2() {
+    const attraction = new google.maps.Data();
+    $.ajax({
+        url: baseUrl + '/api/attraction',
+        type: 'POST',
+        data: {
+            attraction: 'A0002'
+        },
+        dataType: 'json',
+        success: function (response) {
+            const data = response.data;
+            attraction.addGeoJson(data);
+            attraction.setStyle({
+                fillColor:'#0001ff',
+                strokeWeight:0.5,
+                strokeColor:'#ffffff',
+                fillOpacity: 0.1,
+                clickable: false
+            });
+            attraction.setMap(map);
+        }
+    });
 }
 
 // Render map to contains all object marker
