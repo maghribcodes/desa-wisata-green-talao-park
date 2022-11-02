@@ -1,6 +1,7 @@
 <div class="card">
     <div class="card-body">
         <div class="d-grid gap-2">
+            <?php foreach ($data as $item) : endforeach; ?>
             <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#gallery">
                 <span class="material-icons" style="font-size: 1.5rem; vertical-align: bottom">image</span> Open Gallery
             </button>

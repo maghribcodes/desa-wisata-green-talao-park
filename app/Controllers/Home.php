@@ -2,17 +2,20 @@
 
 namespace App\Controllers;
 
-use App\Models\VillageModel;
+use App\Models\GtpModel;
+use App\Models\GalleryGtpModel;
 
 class Home extends BaseController
 {
-    protected $villageModel;
+    protected $gtpModel;
+    protected $galleryGtpModel;
 
     protected $helpers = ['auth', 'url', 'filesystem'];
 
     public function __construct()
     {
-        $this->villageModel = new VillageModel();
+        $this->gtpModel = new GtpModel();
+        $this->galleryGtpModel = new GalleryGtpModel();
     }
 
     public function index()
@@ -48,13 +51,6 @@ class Home extends BaseController
 
     public function web()
     {
-        $contents = $this->villageModel->get_gtp()->getResultArray();
-        $data = [
-            'title' => 'Home',
-            'data' => $contents
-        ];
-
-        return view('web/home', $data);
     }
 
     public function web2()

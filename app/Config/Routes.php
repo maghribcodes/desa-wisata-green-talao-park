@@ -43,7 +43,7 @@ $routes->get('/login', 'Home::login');
 $routes->get('/register', 'Home::register');
 
 $routes->group('web', function ($routes) {
-    $routes->get('/', 'Home::web');
+    // $routes->get('/', 'Home::web');
 
     $routes->group('profile', function ($routes) {
         $routes->get('/', 'Home::profile');
@@ -58,21 +58,46 @@ $routes->group('webnagari', function ($routes) {
 
 // App
 $routes->group('web', ['namespace' => 'App\Controllers\Web'], function ($routes) {
-    $routes->presenter('attraction');
-    $routes->presenter('event');
-    $routes->presenter('package');
+    $routes->presenter('gtp');
+    $routes->get('/', 'Gtp::information');
+
+    $routes->group('tracking', function ($routes) {
+        $routes->presenter('tracking');
+        $routes->get('/', 'Tracking::detail');
+    });
+
+    // $routes->presenter('attraction');
+
+    $routes->group('talao', function ($routes) {
+        $routes->presenter('talao');
+        $routes->get('/', 'Talao::detail');
+    });
+
+
+    // $routes->presenter('event');
+    // $routes->presenter('package');
 
     // Profile
 });
 
 // API
 $routes->group('api', ['namespace' => 'App\Controllers\Api'], function ($routes) {
+    $routes->resource('gtp');
+    $routes->get('information', 'Gtp::information');
     $routes->post('village', 'Village::getData');
-    $routes->post('attraction', 'Attraction::getData');
+
+    $routes->resource('tracking');
+    $routes->get('detail', 'Tracking::detail');
+    $routes->post('tracking', 'Tracking::getData');
+
     $routes->resource('attraction');
-    $routes->post('attraction/findByRadius', 'Attraction::findByRadius');
-    $routes->resource('event');
-    $routes->resource('package');
+
+    $routes->resource('facility');
+    $routes->post('facility/findByRadius', 'Facility::findByRadius');
+    $routes->post('facility/findByTrack', 'Facility::findByTrack');
+
+    // $routes->resource('event');
+    // $routes->resource('package');
 });
 
 /*

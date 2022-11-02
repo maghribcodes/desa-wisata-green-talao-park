@@ -3,68 +3,55 @@
 namespace App\Controllers\Api;
 
 use App\Controllers\BaseController;
-use App\Models\VillageModel;
+use App\Models\GtpModel;
 use App\Models\AttractionModel;
 use CodeIgniter\API\ResponseTrait;
 
 class Village extends BaseController
 {
     use ResponseTrait;
-    protected $villageModel;
+    protected $gtpModel;
     protected $attractionModel;
 
     public function __construct()
     {
-        $this->villageModel = new VillageModel();
+        $this->gtpModel = new GtpModel();
         $this->attractionModel = new AttractionModel();
     }
 
     public function getData()
     {
         $request = $this->request->getPost();
-        $village = $request['village'];
-        if ($village == 'V0001') {
-            $vilProperty = $this->villageModel->get_ulakan_api()->getRowArray();
-            $geoJson = json_decode($this->villageModel->get_geoJson_api($village)->getRowArray()['geoJson']);
-            $content = [
-                'type' => 'Feature',
-                'geometry' => $geoJson,
-                'properties' => [
-                    'id' => $vilProperty['id'],
-                    'name' => $vilProperty['name'],
-                    'lat' => $vilProperty['lat'],
-                    'lng' => $vilProperty['lng'],
-                ]
-            ];
-            $response = [
-                'data' => $content,
-                'status' => 200,
-                'message' => [
-                    "Success display data of Ulakan"
-                ]
-            ];
-            return $this->respond($response);
-        } elseif ($village == 'GTP01') {
-            $vilProperty = $this->villageModel->get_desa_wisata_api()->getRowArray();
-            $geoJson = json_decode($this->villageModel->get_geoJson_api($village)->getRowArray()['geoJson']);
-            $content = [
-                'type' => 'Feature',
-                'geometry' => $geoJson,
-                'properties' => [
-                    'id' => $vilProperty['id'],
-                    'name' => $vilProperty['name'],
-                    'lat' => $vilProperty['lat'],
-                    'lng' => $vilProperty['lng'],
-                ]
-            ];
-            $response = [
-                'data' => $content,
-                'status' => 200,
-                'message' => [
-                    "Success display data of Desa Wisata"
-                ]
-            ];
-            return $this->respond($response);
+        $digitasi = $request['digitasi'];
+
+        if ($digitasi == 'GTP01') {
+            $digiProperty = $this->gtpModel->get_desa_wisata()->getRowArray();
+            $geoJson = json_decode($this->gtpModel->get_geoJson($digitasi)->getRowArray()['geoJson']);
+        } elseif ($digitasi == 'A0001') {
+            $digiProperty = $this->attractionModel->get_tracking()->getRowArray();
+            $geoJson = json_decode($this->attractionModel->get_geoJson($digitasi)->getRowArray()['geoJson']);
+        } else {
+            $digiProperty = $this->attractionModel->get_list_attraction()->getRowArray();
+            $geoJson = json_decode($this->attractionModel->get_geoJson($digitasi)->getRowArray()['geoJson']);
         }
+
+        $content = [
+            'type' => 'Feature',
+            'geometry' => $geoJson,
+            'properties' => [
+                'id' => $digiProperty['id'],
+                'name' => $digiProperty['name'],
+                'lat' => $digiProperty['lat'],
+                'lng' => $digiProperty['lng'],
+            ]
+        ];
+        $response = [
+            'data' => $content,
+            'status' => 200,
+            'message' => [
+                "Success"
+            ]
+        ];
+        return $this->respond($response);
     }
 }

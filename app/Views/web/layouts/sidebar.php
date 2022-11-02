@@ -25,54 +25,18 @@ $uri3 = $uri[3] ?? '';
                         </a>
                     </li>
 
-                    <!-- <li class="sidebar-item <? //= ($uri1 == 'attraction') ? 'active' : '' 
-                                                    ?>">
-                        <a href="/web/attraction" class="sidebar-link">
-                            <i class="fa-solid fa-list"></i><span>List Attraction</span>
-                        </a>
-                    </li> -->
-
                     <!-- Object -->
-                    <li class="sidebar-item <?= ($uri1 == 'attraction') ? 'active' : '' ?> has-sub">
-                        <a href="" class="sidebar-link">
-                            <i class="fa-solid fa-tree"></i><span>Attraction</span>
+
+                    <li class="sidebar-item <?= ($uri1 == 'tracking') ? 'active' : '' ?>">
+                        <a href="<?= base_url('/web/tracking'); ?>" class="sidebar-link">
+                            <i class="fa-solid fa-tree"></i><span>Tracking Mangrove</span>
                         </a>
+                    </li>
 
-                        <ul class="submenu <?= ($uri1 == 'attraction') ? 'active' : '' ?>">
-                            <!-- List Object -->
-                            <li class="submenu-item" id="at-list">
-                                <a href="<?= base_url('/web/attraction'); ?>"><i class="fa-solid fa-list me-3"></i>List</a>
-                            </li>
-
-                            <!-- Object Around You -->
-                            <li class="submenu-item" id="at-around-you">
-                                <a data-bs-toggle="collapse" href="#searchRadiusAT" role="button" aria-expanded="false" aria-controls="searchRadiusAT"><i class="fa-solid fa-compass me-3"></i>Around You</a>
-                                <div class="collapse mb-3" id="searchRadiusAT">
-                                    <label for="inputRadiusAT" class="form-label">Radius: </label>
-                                    <label id="radiusValueAT" class="form-label">0 m</label>
-                                    <input type="range" class="form-range" min="0" max="20" value="0" id="inputRadiusAT" name="inputRadius" onchange="updateRadius('AT'); radiusSearch({postfix: 'AT'});">
-                                </div>
-                            </li>
-
-                            <!-- Object Search -->
-                            <li class="submenu-item has-sub" id="at-search">
-                                <a data-bs-toggle="collapse" href="#subsubmenu" role="button" aria-expanded="false" aria-controls="subsubmenu" class="collapse"><i class="fa-solid fa-magnifying-glass me-3"></i>Search</a>
-                                <ul class="subsubmenu collapse" id="subsubmenu">
-                                    <!-- Seach by Name -->
-                                    <li class="submenu-item submenu-marker" id="at-by-name">
-                                        <a data-bs-toggle="collapse" href="#searchNameAT" role="button" aria-expanded="false" aria-controls="searchNameAT"><i class="fa-solid fa-arrow-down-a-z me-3"></i>By Name</a>
-                                        <div class="collapse mb-3" id="searchNameAT">
-                                            <div class="d-grid gap-2">
-                                                <input type="text" name="nameAT" id="nameAT" class="form-control" placeholder="Name" aria-label="Recipient's username" aria-describedby="button-addon2">
-                                                <button class="btn btn-outline-primary" type="submit" id="button-addon2">
-                                                    <span class="material-icons" style="font-size: 1.5rem; vertical-align: bottom">search</span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
+                    <li class="sidebar-item <?= ($uri1 == 'talao') ? 'active' : '' ?>">
+                        <a href="<?= base_url('/web/talao'); ?>" class="sidebar-link">
+                            <i class="fa-solid fa-water"></i><span>Estuaria/Talao</span>
+                        </a>
                     </li>
 
                     <!-- Event -->

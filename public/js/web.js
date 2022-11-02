@@ -68,35 +68,39 @@ function initMap(lat = -0.7102134517843606, lng = 100.19420485758688) {
     digitVillage();
 }
 
-function initMap2() {
-    initMap();
-    digitAttraction1();
-    digitAttraction2();
-}
-
 // Display tourism village digitizing
 function digitVillage() {
-    const village = new google.maps.Data();
+    const digitasi = new google.maps.Data();
     $.ajax({
         url: baseUrl + '/api/village',
         type: 'POST',
         data: {
-            village: 'GTP01'
+            digitasi: 'GTP01'
         },
         dataType: 'json',
         success: function (response) {
             const data = response.data;
-            village.addGeoJson(data);
-            village.setStyle({
+            digitasi.addGeoJson(data);
+            digitasi.setStyle({
                 fillColor:'#00b300',
                 strokeWeight:0.5,
                 strokeColor:'#ffffff',
-                fillOpacity: 0.1,
+                fillOpacity: 0.4,
                 clickable: false
             });
-            village.setMap(map);
+            digitasi.setMap(map);
         }
     });
+}
+
+function initMap2() {
+    initMap();
+    digitTracking();
+}
+
+function initMap3() {
+    initMap();
+    digitTalao();
 }
 
 // Remove user location
@@ -254,6 +258,57 @@ function routeTo(lat, lng, routeFromUser = true) {
     boundToRoute(start, end);
 }
 
+// Display tourism attraction digitizing
+// Tracking Mangrove
+function digitTracking() {
+    const digitasi = new google.maps.Data();
+    $.ajax({
+        url: baseUrl + '/api/village',
+        type: 'POST',
+        data: {
+            digitasi: 'A0001'
+        },
+        dataType: 'json',
+        success: function (response) {
+            const data = response.data;
+            digitasi.addGeoJson(data);
+            digitasi.setStyle({
+                fillColor:'#0001ff',
+                strokeWeight:2.5,
+                strokeColor:'#129930',
+                fillOpacity: 1,
+                clickable: false
+            });
+            digitasi.setMap(map);
+        }
+    });
+}
+
+// Estuaria/Talao
+function digitTalao() {
+    const digitasi = new google.maps.Data();
+    $.ajax({
+        url: baseUrl + '/api/village',
+        type: 'POST',
+        data: {
+            digitasi: 'A0002'
+        },
+        dataType: 'json',
+        success: function (response) {
+            const data = response.data;
+            digitasi.addGeoJson(data);
+            digitasi.setStyle({
+                fillColor:'#0001ff',
+                strokeWeight:0.5,
+                strokeColor:'#ffffff',
+                fillOpacity: 0.1,
+                clickable: false
+            });
+            digitasi.setMap(map);
+        }
+    });
+}
+
 // Display marker for loaded object
 function objectMarker(id, lat, lng, anim = true) {
 
@@ -264,7 +319,8 @@ function objectMarker(id, lat, lng, anim = true) {
     let icon;
     if (id.substring(0,1) === "A") {
         icon = baseUrl + '/media/icon/marker_at.png';
-    } else if (id.substring(0,2) === "CP") {
+    } else if (id.substring(0,2) === "FC") {
+        
         icon = baseUrl + '/media/icon/marker_cp.png';
     } else if (id.substring(0,2) === "WP") {
         icon = baseUrl + '/media/icon/marker_wp.png';
@@ -307,22 +363,27 @@ function objectInfoWindow(id){
                 let name = data.name;
                 let lat = data.lat;
                 let lng = data.lng;
-                // let price = (data.price == 0) ? 'Free' : 'Rp ' + data.price;
-                // let open = data.open.substring(0, data.open.length - 3);
-                // let close = data.close.substring(0, data.close.length - 3);
-
+                let type = data.type;
+                let price = (data.price == 0) ? 'Free' : 'Rp ' + data.price;
+                
                 content =
                     '<div class="text-center">' +
                     '<p class="fw-bold fs-6">'+ name +'</p> <br>' +
-                    // '<p><i class="fa-solid fa-clock me-2"></i> '+open+' - '+close+' WIB</p>' +
-                    // '<p><i class="fa-solid fa-money-bill me-2"></i> '+ price +'</p>' +
+                    '<p><i class="fa-solid fa-spa"></i> '+ type +'</p>' +
+                    '<p><i class="fa-solid fa-money-bill me-2"></i> '+ price +'</p>' +
                     '</div>';
-                contentButton =
+                
+                if(aid == "A0001") {
+                    contentButton =
                     '<br><div class="text-center">' +
-                    '<a title="Route" class="btn icon btn-outline-primary mx-1" id="routeInfoWindow" onclick="routeTo('+lat+', '+lng+')"><i class="fa-solid fa-road"></i></a>' +
-                    '<a title="Info" class="btn icon btn-outline-primary mx-1" target="_blank" id="infoInfoWindow" href='+baseUrl+'/web/attraction/'+aid+'><i class="fa-solid fa-info"></i></a>' +
+                    '<a title="Nearby" class="btn icon btn-outline-primary mx-1" id="nearbyInfoWindow" onclick="openTrack(`'+ aid +'`,'+ lat +','+ lng +')"><i class="fa-solid fa-compass"></i></a>' +
+                    '</div>'
+                } else {
+                    contentButton =
+                    '<br><div class="text-center">' +
                     '<a title="Nearby" class="btn icon btn-outline-primary mx-1" id="nearbyInfoWindow" onclick="openNearby(`'+ aid +'`,'+ lat +','+ lng +')"><i class="fa-solid fa-compass"></i></a>' +
                     '</div>'
+                }
 
                 if (currentUrl.includes(id)) {
                     infoWindow.setContent(content);
@@ -399,9 +460,9 @@ function objectInfoWindow(id){
                 }
             }
         }); 
-    } else if (id.substring(0,2) === "CP") {
+    } else if (id.substring(0,2) === "FC") {
         $.ajax({
-            url: baseUrl + '/api/culinaryPlace/' + id,
+            url: baseUrl + '/api/facility/' + id,
             dataType: 'json',
             success: function (response) {
                 let data = response.data;
@@ -413,93 +474,16 @@ function objectInfoWindow(id){
                     '</div>';
 
                 infoWindow.setContent(content);
-            }
-        });
-    }  
-    else if (id.substring(0,2) === "WP") {
-        $.ajax({
-            url: baseUrl + '/api/worshipPlace/' + id,
-            dataType: 'json',
-            success: function (response) {
-                let data = response.data;
-                let name = data.name;
 
-                content =
-                    '<div class="text-center">' +
-                    '<p class="fw-bold fs-6">'+ name +'</p>' +
-                    '</div>';
-
-                infoWindow.setContent(content);
-            }
-        });
-    } else if (id.substring(0,2) === "SP") {
-        $.ajax({
-            url: baseUrl + '/api/souvenirPlace/' + id,
-            dataType: 'json',
-            success: function (response) {
-                let data = response.data;
-                let name = data.name;
-
-                content =
-                    '<div class="text-center">' +
-                    '<p class="fw-bold fs-6">'+ name +'</p>' +
-                    '</div>';
-
-                infoWindow.setContent(content);
+                // if (currentUrl.includes(id)) {
+                //     infoWindow.setContent(content);
+                //     infoWindow.open(map, markerArray[paid])
+                // } else {
+                //     infoWindow.setContent(content + contentButton);
+                // }
             }
         });
     }
-}
-
-// Display tourism attraction digitizing
-// Tracking Mangrove
-function digitAttraction1() {
-    const attraction = new google.maps.Data();
-    $.ajax({
-        url: baseUrl + '/api/attraction',
-        type: 'POST',
-        data: {
-            attraction: 'A0001'
-        },
-        dataType: 'json',
-        success: function (response) {
-            const data = response.data;
-            attraction.addGeoJson(data);
-            attraction.setStyle({
-                fillColor:'#ff0000',
-                strokeWeight:3,
-                strokeColor:'#ff0000',
-                fillOpacity: 1,
-                clickable: false
-            });
-            attraction.setMap(map);
-        }
-    });
-}
-
-// Estuaria/Talao
-function digitAttraction2() {
-    const attraction = new google.maps.Data();
-    $.ajax({
-        url: baseUrl + '/api/attraction',
-        type: 'POST',
-        data: {
-            attraction: 'A0002'
-        },
-        dataType: 'json',
-        success: function (response) {
-            const data = response.data;
-            attraction.addGeoJson(data);
-            attraction.setStyle({
-                fillColor:'#0001ff',
-                strokeWeight:0.5,
-                strokeColor:'#ffffff',
-                fillOpacity: 0.1,
-                clickable: false
-            });
-            attraction.setMap(map);
-        }
-    });
 }
 
 // Render map to contains all object marker
@@ -511,7 +495,7 @@ function boundToObject() {
         }
         map.fitBounds(bounds, 80);
     } else {
-        let pos = new google.maps.LatLng(-0.7106133793157127, 100.19519243888361);
+        let pos = new google.maps.LatLng(-0.7102134517843606, 100.19420485758688);
         map.panTo(pos);
     }
 }
@@ -556,42 +540,42 @@ function updateRadius(postfix) {
 }
 
 // Render search by radius
-function radiusSearch({postfix= null, } = {}) {
+// function radiusSearch({postfix= null, } = {}) {
 
-    if (userLat == 0 && userLng == 0) {
-        document.getElementById('radiusValue' + postfix).innerHTML = "0 m";
-        document.getElementById('inputRadius' + postfix).value = 0;
-        return Swal.fire('Determine your position first!');
-    }
+//     if (userLat == 0 && userLng == 0) {
+//         document.getElementById('radiusValue' + postfix).innerHTML = "0 m";
+//         document.getElementById('inputRadius' + postfix).value = 0;
+//         return Swal.fire('Determine your position first!');
+//     }
 
-    clearRadius();
-    clearRoute();
-    clearMarker();
-    destinationMarker.setMap(null);
-    google.maps.event.clearListeners(map, 'click');
-    closeNearby();
+//     clearRadius();
+//     clearRoute();
+//     clearMarker();
+//     destinationMarker.setMap(null);
+//     google.maps.event.clearListeners(map, 'click');
+//     closeNearby();
 
-    let pos = new google.maps.LatLng(currentLat, currentLng);
-    let radiusValue = parseFloat(document.getElementById('inputRadius' + postfix).value) * 100;
-    map.panTo(pos);
+//     let pos = new google.maps.LatLng(currentLat, currentLng);
+//     let radiusValue = parseFloat(document.getElementById('inputRadius' + postfix).value) * 100;
+//     map.panTo(pos);
 
-    // find object in radius
-    if (postfix === 'AT') {
-        $.ajax({
-            url: baseUrl + '/api/attraction/findByRadius',
-            type: 'POST',
-            data: {
-                lat: currentLat,
-                long: currentLng,
-                radius: radiusValue
-            },
-            dataType: 'json',
-            success: function (response) {
-                displayFoundObject(response);
-                drawRadius(pos, radiusValue);
-            }
-        });
-    } 
+//     // find object in radius
+//     if (postfix === 'AT') {
+//         $.ajax({
+//             url: baseUrl + '/api/attraction/findByRadius',
+//             type: 'POST',
+//             data: {
+//                 lat: currentLat,
+//                 long: currentLng,
+//                 radius: radiusValue
+//             },
+//             dataType: 'json',
+//             success: function (response) {
+//                 displayFoundObject(response);
+//                 drawRadius(pos, radiusValue);
+//             }
+//         });
+//     } 
     // else if (postfix === 'EV') {
     //     $.ajax({
     //         url: baseUrl + '/api/event/findByRadius',
@@ -609,7 +593,7 @@ function radiusSearch({postfix= null, } = {}) {
     //     });
     // }
 
-}
+//}
 
 // pan to selected object
 function focusObject(id) {
@@ -618,57 +602,57 @@ function focusObject(id) {
 }
 
 // display objects by feature used
-function displayFoundObject(response) {
-    $('#table-data').empty();
-    let data = response.data;
-    let counter = 1;
-    const months = [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December'
-    ];
-    for (i in data) {
-        let item = data[i];
-        let row;
-        if (item.hasOwnProperty('date_next')){
-            let date_next = new Date(item.date_next);
-            let next = date_next.getDate() + ' ' + months[date_next.getMonth()] + ' ' + date_next.getFullYear();
-            row =
-                '<tr>'+
-                '<td>'+ counter +'</td>' +
-                '<td class="fw-bold">'+ item.name +'<br><span class="text-muted">' + next + '</span></td>' +
-                '<td>'+
-                '<a data-bs-toggle="tooltip" data-bs-placement="bottom" title="More Info" class="btn icon btn-primary mx-1" onclick="focusObject(`'+ item.id +'`);">' +
-                '<span class="material-symbols-outlined">info</span>' +
-                '</a>' +
-                '</td>'+
-                '</tr>';
-        } else {
-            row =
-                '<tr>'+
-                '<td>'+ counter +'</td>' +
-                '<td class="fw-bold">'+ item.name +'</td>' +
-                '<td>'+
-                '<a data-bs-toggle="tooltip" data-bs-placement="bottom" title="More Info" class="btn icon btn-primary mx-1" onclick="focusObject(`'+ item.id +'`);">' +
-                '<span class="material-symbols-outlined">info</span>' +
-                '</a>' +
-                '</td>'+
-                '</tr>';
-        }
-        $('#table-data').append(row);
-        objectMarker(item.id, item.lat, item.lng);
-        counter++;
-    }
-}
+// function displayFoundObject(response) {
+//     $('#table-data').empty();
+//     let data = response.data;
+//     let counter = 1;
+//     const months = [
+//         'January',
+//         'February',
+//         'March',
+//         'April',
+//         'May',
+//         'June',
+//         'July',
+//         'August',
+//         'September',
+//         'October',
+//         'November',
+//         'December'
+//     ];
+//     for (i in data) {
+//         let item = data[i];
+//         let row;
+//         if (item.hasOwnProperty('date_next')){
+//             let date_next = new Date(item.date_next);
+//             let next = date_next.getDate() + ' ' + months[date_next.getMonth()] + ' ' + date_next.getFullYear();
+//             row =
+//                 '<tr>'+
+//                 '<td>'+ counter +'</td>' +
+//                 '<td class="fw-bold">'+ item.name +'<br><span class="text-muted">' + next + '</span></td>' +
+//                 '<td>'+
+//                 '<a data-bs-toggle="tooltip" data-bs-placement="bottom" title="More Info" class="btn icon btn-primary mx-1" onclick="focusObject(`'+ item.id +'`);">' +
+//                 '<span class="material-symbols-outlined">info</span>' +
+//                 '</a>' +
+//                 '</td>'+
+//                 '</tr>';
+//         } else {
+//             row =
+//                 '<tr>'+
+//                 '<td>'+ counter +'</td>' +
+//                 '<td class="fw-bold">'+ item.name +'</td>' +
+//                 '<td>'+
+//                 '<a data-bs-toggle="tooltip" data-bs-placement="bottom" title="More Info" class="btn icon btn-primary mx-1" onclick="focusObject(`'+ item.id +'`);">' +
+//                 '<span class="material-symbols-outlined">info</span>' +
+//                 '</a>' +
+//                 '</td>'+
+//                 '</tr>';
+//         }
+//         $('#table-data').append(row);
+//         objectMarker(item.id, item.lat, item.lng);
+//         counter++;
+//     }
+// }
 
 // display steps of direction to selected route
 function showSteps(directionResult) {
@@ -690,126 +674,416 @@ function showSteps(directionResult) {
 // close nearby search section
 function closeNearby() {
     $('#direction-row').hide();
+    $('#check-track-col').hide();
     $('#check-nearby-col').hide();
+    $('#result-track-col').hide();
     $('#result-nearby-col').hide();
     $('#list-at-col').show();
     $('#list-ev-col').show();
 }
 
 // open nearby search section
-function openNearby() {
+function openTrack(id, lat, lng) {
     $('#list-at-col').hide();
-    $('#list-ev-col').hide();
-    $('#list-rec-col').hide();
+    $('#check-track-col').show();
+
+    currentLat = lat;
+    currentLng = lng;
+    let pos = new google.maps.LatLng(currentLat, currentLng);
+    map.panTo(pos);
+
+    document.getElementById('inputTrackAlong').setAttribute('onclick', 'checkTrack("'+id+'")');
+}
+
+// open nearby search section
+function openNearby(id, lat, lng) {
+    $('#list-at-col').hide();
     $('#check-nearby-col').show();
+
+    currentLat = lat;
+    currentLng = lng;
+    let pos = new google.maps.LatLng(currentLat, currentLng);
+    map.panTo(pos);
+
+    document.getElementById('inputRadiusNearby').setAttribute('onchange', 'updateRadius("Nearby"); checkNearby("'+id+'")');
 }
 
 // Search Result Object Around
-function checkNearby() {
-    $('#table-cp').empty();
-    $('#table-ev').empty();
-    $('#table-gp').empty();
-    $('#table-ho').empty();
-    $('#table-sp').empty();
-    $('#table-wp').empty();
-    $('#table-cp').hide();
-    $('#table-ev').hide();
-    $('#table-gp').hide();
-    $('#table-ho').hide();
-    $('#table-sp').hide();
-    $('#table-wp').hide();
+function checkNearby(id) {
+    clearRadius();
+    clearRoute();
+    clearMarker();
+    clearUser();
+    destinationMarker.setMap(null);
+    google.maps.event.clearListeners(map, 'click')
 
-    const checkCP = document.getElementById('check-cp').checked;
-    const checkEV = document.getElementById('check-ev').checked;
-    const checkGP = document.getElementById('check-gp').checked;
-    const checkHO = document.getElementById('check-ho').checked;
-    const checkSP = document.getElementById('check-sp').checked;
-    const checkWP = document.getElementById('check-wp').checked;
+    objectMarker(id, currentLat, currentLng, false);
 
-    if (!checkCP && !checkEV && !checkGP && !checkHO && !checkSP && !checkWP) {
+    $('#table-F0001').empty();
+    $('#table-F0002').empty();
+    $('#table-F0003').empty();
+    $('#table-F0004').empty();
+    $('#table-F0005').empty();
+    $('#table-F0006').empty();
+    $('#table-F0007').empty();
+    $('#table-F0008').empty();
+    $('#table-F0009').empty();
+    $('#table-F0010').empty();
+
+    $('#table-F0001').hide();
+    $('#table-F0002').hide();
+    $('#table-F0003').hide();
+    $('#table-F0004').hide();
+    $('#table-F0005').hide();
+    $('#table-F0006').hide();
+    $('#table-F0007').hide();
+    $('#table-F0008').hide();
+    $('#table-F0009').hide();
+    $('#table-F0010').hide();
+
+    let radiusValue = parseFloat(document.getElementById('inputRadiusNearby').value) * 100;
+
+    const checkCP = document.getElementById('F0001').checked;
+    const checkGA = document.getElementById('F0002').checked;
+    const checkOF = document.getElementById('F0003').checked;
+    const checkPA = document.getElementById('F0004').checked;
+    const checkPB = document.getElementById('F0005').checked;
+    const checkSA = document.getElementById('F0006').checked;
+    const checkSP = document.getElementById('F0007').checked;
+    const checkTH = document.getElementById('F0008').checked;
+    const checkVT = document.getElementById('F0009').checked;
+    const checkWP = document.getElementById('F0010').checked;
+
+    if (!checkCP && !checkGA && !checkOF && !checkPA && !checkPB && !checkSA
+        && !checkSP && !checkTH && !checkVT && !checkWP) {
         document.getElementById('radiusValueNearby').innerHTML = "0 m";
         document.getElementById('inputRadiusNearby').value = 0;
         return Swal.fire('Please choose one object');
     }
 
     if (checkCP) {
-        let table =
-            '<thead><tr>' +
-            '<th>Culinary Place Name</th>' +
-            '<th>Action</th>' +
-            '</tr></thead>' +
-            '<tbody id="data-cp">' +
-            '</tbody>';
-        $('#table-cp').append(table);
-        $('#table-cp').show();
+        findNearby('F0001', radiusValue);
+        $('#table-F0001').show();
     }
-    if (checkEV) {
-        let table =
-            '<thead><tr>' +
-            '<th>Event Name</th>' +
-            '<th>Action</th>' +
-            '</tr></thead>' +
-            '<tbody id="data-ev">' +
-            '</tbody>';
-        $('#table-ev').append(table);
-        $('#table-ev').show();
+    if (checkGA) {
+        findNearby('F0002', radiusValue);
+        $('#table-F0002').show();
     }
-    if (checkWP) {
-        let table =
-            '<thead><tr>' +
-            '<th>Worship Name</th>' +
-            '<th>Action</th>' +
-            '</tr></thead>' +
-            '<tbody id="data-wp">' +
-            '</tbody>';
-        $('#table-wp').append(table);
-        $('#table-wp').show();
+    if (checkOF) {
+        findNearby('F0003', radiusValue);
+        $('#table-F0003').show();
+    }
+    if (checkPA) {
+        findNearby('F0004', radiusValue);
+        $('#table-F0004').show();
+    }
+    if (checkPB) {
+        findNearby('F0005', radiusValue);
+        $('#table-F0005').show();
+    }
+    if (checkSA) {
+        findNearby('F0006', radiusValue);
+        $('#table-F0006').show();
     }
     if (checkSP) {
-        let table =
-            '<thead><tr>' +
-            '<th>Souvenir Name</th>' +
-            '<th>Action</th>' +
-            '</tr></thead>' +
-            '<tbody id="data-sp">' +
-            '</tbody>';
-        $('#table-sp').append(table);
-        $('#table-sp').show();
+        findNearby('F0007', radiusValue);
+        $('#table-F0007').show();
     }
+    if (checkTH) {
+        findNearby('F0008', radiusValue);
+        $('#table-F0008').show();
+    }
+    if (checkVT) {
+        findNearby('F0009', radiusValue);
+        $('#table-F0009').show();
+    }
+    if (checkWP) {
+        findNearby('F0010', radiusValue);
+        $('#table-F0010').show();
+    }
+    drawRadius(new google.maps.LatLng(currentLat, currentLng), radiusValue);
     $('#result-nearby-col').show();
 }
 
-// Set star by user input
-function setStar(star) {
-    switch (star) {
-        case 'star-1' :
-            $("#star-1").addClass('star-checked');
-            $("#star-2,#star-3,#star-4,#star-5").removeClass('star-checked');
-            document.getElementById('star-rating').value = '1';
-            break;
-        case 'star-2' :
-            $("#star-1,#star-2").addClass('star-checked');
-            $("#star-3,#star-4,#star-5").removeClass('star-checked');
-            document.getElementById('star-rating').value = '2';
-            break;
-        case 'star-3' :
-            $("#star-1,#star-2,#star-3").addClass('star-checked');
-            $("#star-4,#star-5").removeClass('star-checked');
-            document.getElementById('star-rating').value = '3';
-            break;
-        case 'star-4' :
-            $("#star-1,#star-2,#star-3,#star-4").addClass('star-checked');
-            $("#star-5").removeClass('star-checked');
-            document.getElementById('star-rating').value = '4';
-            break;
-        case 'star-5' :
-            $("#star-1,#star-2,#star-3,#star-4,#star-5").addClass('star-checked');
-            document.getElementById('star-rating').value = '5';
-            break;
+// Check facility along tracking
+function checkTrack(id) {
+    clearRadius();
+    clearRoute();
+    clearMarker();
+    clearUser();
+    destinationMarker.setMap(null);
+    google.maps.event.clearListeners(map, 'click')
+
+    objectMarker(id, currentLat, currentLng, false);
+
+    // let i = 1;
+    // for(i > 0; i <= 10; i++) {
+    //     $('#table-F000'+i).empty();
+    //     $('#table-F000'+i).hide();
+    // }
+
+    $('#table-F0001').empty();
+    $('#table-F0002').empty();
+    $('#table-F0003').empty();
+    $('#table-F0004').empty();
+    $('#table-F0005').empty();
+    $('#table-F0006').empty();
+    $('#table-F0007').empty();
+    $('#table-F0008').empty();
+    $('#table-F0009').empty();
+    $('#table-F0010').empty();
+
+    $('#table-F0001').hide();
+    $('#table-F0002').hide();
+    $('#table-F0003').hide();
+    $('#table-F0004').hide();
+    $('#table-F0005').hide();
+    $('#table-F0006').hide();
+    $('#table-F0007').hide();
+    $('#table-F0008').hide();
+    $('#table-F0009').hide();
+    $('#table-F0010').hide();
+
+    const checkCP = document.getElementById('F0001').checked;
+    const checkGA = document.getElementById('F0002').checked;
+    const checkOF = document.getElementById('F0003').checked;
+    const checkPA = document.getElementById('F0004').checked;
+    const checkPB = document.getElementById('F0005').checked;
+    const checkSA = document.getElementById('F0006').checked;
+    const checkSP = document.getElementById('F0007').checked;
+    const checkTH = document.getElementById('F0008').checked;
+    const checkVT = document.getElementById('F0009').checked;
+    const checkWP = document.getElementById('F0010').checked;
+
+    if (!checkCP && !checkGA && !checkOF && !checkPA && !checkPB && !checkSA
+        && !checkSP && !checkTH && !checkVT && !checkWP) {
+        return Swal.fire('Please choose one object');
     }
-    console.log(document.getElementById('star-rating').value)
+
+    if (checkCP) {
+        findTracking('F0001');
+        $('#table-F0001').show();
+    }
+    if (checkGA) {
+        findTracking('F0002');
+        $('#table-F0002').show();
+    }
+    if (checkOF) {
+        findTracking('F0003');
+        $('#table-F0003').show();
+    }
+    if (checkPA) {
+        findTracking('F0004');
+        $('#table-F0004').show();
+    }
+    if (checkPB) {
+        findTracking('F0005');
+        $('#table-F0005').show();
+    }
+    if (checkSA) {
+        findTracking('F0006');
+        $('#table-F0006').show();
+    }
+    if (checkSP) {
+        findTracking('F0007');
+        $('#table-F0007').show();
+    }
+    if (checkTH) {
+        findTracking('F0008');
+        $('#table-F0008').show();
+    }
+    if (checkVT) {
+        findTracking('F0009');
+        $('#table-F0009').show();
+    }
+    if (checkWP) {
+        findTracking('F0010');
+        $('#table-F0010').show();
+    }
+    
+    $('#result-track-col').show();
 }
 
+// Fetch object along tracking
+function findTracking(category) {
+    let pos = new google.maps.LatLng(currentLat, currentLng);
+    // if (category === 'FC') {
+        const ftype = new google.maps.Data();
+        $.ajax({
+            url: baseUrl + '/api/facility/findByTrack',
+            type: 'POST',
+            data: {
+                ftype: category
+            },
+            dataType: 'json',
+            success: function (response) {
+                displayTrackResult(category, response);
+            }
+        });
+    // }
+}
+
+// Fetch object nearby by category
+function findNearby(category, radius) {
+    let pos = new google.maps.LatLng(currentLat, currentLng);
+    // if (category === 'FC') {
+        const ftype2 = new google.maps.Data();
+        $.ajax({
+            url: baseUrl + '/api/facility/findByRadius',
+            type: 'POST',
+            data: {
+                ftype2: category,
+                lat: currentLat,
+                long: currentLng,
+                radius: radius
+            },
+            dataType: 'json',
+            success: function (response) {
+                displayNearbyResult(category, response);
+            }
+        });
+    // }
+}
+
+// Add nearby object to corresponding table
+function displayTrackResult(category, response) {
+    let data = response.data;
+    let headerName;
+    if (category === 'F0001') {
+        headerName = 'Culinary Place';
+    } else if (category === 'F0002') {
+        headerName = 'Gazebo';
+    } else if (category === 'F0003') {
+        headerName = 'Outbond Field'
+    } else if (category === 'F0004') {
+        headerName = 'Parking Area'
+    } else if (category === 'F0005') {
+        headerName = 'Public Bathroom'
+    } else if (category === 'F0006') {
+        headerName = 'Selfie Area'
+    } else if (category === 'F0007') {
+        headerName = 'Souvenir Place'
+    } else if (category === 'F0008') {
+        headerName = 'Tree House'
+    } else if (category === 'F0009') {
+        headerName = 'Viewing Tower'
+    } else if (category === 'F0010') {
+        headerName = 'Worship Place'
+    }
+
+    let table =
+        '<thead><tr>' +
+        '<th>'+ headerName +' Name</th>' +
+        '<th colspan="2">Action</th>' +
+        '</tr></thead>' +
+        '<tbody id="data-'+category+'">' +
+        '</tbody>';
+    $('#table-'+category).append(table);
+
+    for (i in data) {
+        let item = data[i];
+        let row =
+            '<tr>'+
+            '<td>'+ item.name +'</td>' +
+            '<td>'+
+            '<a title="Info" class="btn-sm icon btn-primary" onclick="infoModal(`'+ item.facility_id +'`)"><i class="fa-solid fa-info"></i></a>' +
+            '</td>'+
+            '<td>'+
+            '<a title="Location" class="btn-sm icon btn-primary" onclick="focusObject(`'+ item.facility_id +'`);"><i class="fa-solid fa-location-dot"></i></a>' +
+            '</td>'+
+            '</tr>';
+        $('#data-'+category).append(row);
+        objectMarker(item.facility_id, item.lat, item.long);
+    }
+}
+
+// Add nearby object to corresponding table
+function displayNearbyResult(category, response) {
+    let data = response.data;
+    let headerName;
+    if (category === 'F0001') {
+        headerName = 'Culinary Place';
+    } else if (category === 'F0002') {
+        headerName = 'Gazebo';
+    } else if (category === 'F0003') {
+        headerName = 'Outbond Field'
+    } else if (category === 'F0004') {
+        headerName = 'Parking Area'
+    } else if (category === 'F0005') {
+        headerName = 'Public Bathroom'
+    } else if (category === 'F0006') {
+        headerName = 'Selfie Area'
+    } else if (category === 'F0007') {
+        headerName = 'Souvenir Place'
+    } else if (category === 'F0008') {
+        headerName = 'Tree House'
+    } else if (category === 'F0009') {
+        headerName = 'Viewing Tower'
+    } else if (category === 'F0010') {
+        headerName = 'Worship Place'
+    }
+
+    let table =
+        '<thead><tr>' +
+        '<th>'+ headerName +' Name</th>' +
+        '<th colspan="2">Action</th>' +
+        '</tr></thead>' +
+        '<tbody id="data-'+category+'">' +
+        '</tbody>';
+    $('#table-'+category).append(table);
+
+    for (i in data) {
+        let item = data[i];
+        let row =
+            '<tr>'+
+            '<td>'+ item.name +'</td>' +
+            '<td>'+
+            '<a title="Info" class="btn-sm icon btn-primary" onclick="infoModal(`'+ item.id +'`)"><i class="fa-solid fa-info"></i></a>' +
+            '</td>'+
+            '<td>'+
+            '<a title="Location" class="btn-sm icon btn-primary" onclick="focusObject(`'+ item.id +'`);"><i class="fa-solid fa-location-dot"></i></a>' +
+            '</td>'+
+            '</tr>';
+        $('#data-'+category).append(row);
+        objectMarker(item.id, item.lat, item.lng);
+    }
+}
+
+// Show modal for object
+function infoModal(id) {
+    let title, content;
+    if (id.substring(0,2) === "FC") {
+        $.ajax({
+            url: baseUrl + '/api/facility/' + id,
+            dataType: 'json',
+            success: function (response) {
+                let item = response.data;
+                let open = item.open.substring(0, item.open.length - 3);
+                let close = item.close.substring(0, item.close.length - 3);
+
+                title = '<h3>'+item.name+'</h3>';
+                content =
+                    '<div class="text-start">'+
+                    '<p><span class="fw-bold">Address</span>: '+ item.address +'</p>'+
+                    '<p><span class="fw-bold">Open</span>: '+ open +' - '+ close+' WIB</p>'+
+                    '<p><span class="fw-bold">Contact Person:</span> '+ item.contact_person+'</p>'+
+                    '<p><span class="fw-bold">Capacity</span>: '+ item.capacity+'</p>'+
+                    '<p><span class="fw-bold">Employee</span>: '+ item.employee+'</p>'+
+                    '</div>'+
+                    '<div>' +
+                    '<img src="/media/photos/'+item.gallery[0]+'" alt="'+ item.name +'" class="w-50">' +
+                    '</div>';
+
+                Swal.fire({
+                    title: title,
+                    html: content,
+                    width: '50%',
+                    position: 'top'
+                });
+            }
+        });
+    }
+}
 // Create legend
 function getLegend() {
     const icons = {
@@ -855,15 +1129,6 @@ function viewLegend() {
         $('#legend').show();
     } else {
         $('#legend').hide();
-    }
-}
-
-// Validate if star rating picked yet
-function checkStar(event) {
-    const star = document.getElementById('star-rating').value;
-    if (star == '0') {
-        event.preventDefault();
-        Swal.fire('Please put rating star');
     }
 }
 
