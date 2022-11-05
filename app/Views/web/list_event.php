@@ -86,7 +86,9 @@
 <?= $this->section('javascript') ?>
 <script>
     $('#direction-row').hide();
+    $('#check-track-col').hide();
     $('#check-nearby-col').hide();
+    $('#result-track-col').hide();
     $('#result-nearby-col').hide();
 </script>
 <?= $this->endSection() ?>

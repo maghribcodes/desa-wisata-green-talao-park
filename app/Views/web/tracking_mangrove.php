@@ -52,7 +52,7 @@
                         <?php endforeach; ?>
 
                         <!-- Object Media -->
-                        <?= $this->include('web/layouts/gallery_video_attraction'); ?>
+                        <?= $this->include('web/layouts/gallery_video'); ?>
 
                     </div>
                 </div>
@@ -68,6 +68,17 @@
 
 <?= $this->section('javascript') ?>
 <script>
+    const myModal = document.getElementById('videoModal');
+    const videoSrc = document.getElementById('video-play').getAttribute('data-src');
+
+    myModal.addEventListener('shown.bs.modal', () => {
+        console.log(videoSrc);
+        document.getElementById('video').setAttribute('src', videoSrc);
+    });
+    myModal.addEventListener('hide.bs.modal', () => {
+        document.getElementById('video').setAttribute('src', '');
+    });
+
     $('#direction-row').hide();
     $('#check-track-col').hide();
     $('#check-nearby-col').hide();

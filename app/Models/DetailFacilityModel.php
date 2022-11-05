@@ -33,7 +33,7 @@ class DetailFacilityModel extends Model
             ->where('attraction_id', 'A0001')
             ->join('facility', 'detail_facility.facility_id = facility.id')
             ->where('facility.type_id', $x)
-            ->select('facility.name')
+            ->select('facility.name, facility.type_id')
             ->get();
         return $query;
     }

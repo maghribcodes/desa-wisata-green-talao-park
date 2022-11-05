@@ -23,7 +23,7 @@ class Package extends ResourcePresenter
      */
     public function index()
     {
-        $contents = $this->packageModel->get_list_package_api()->getResultArray();
+        $contents = $this->packageModel->get_list_package()->getResultArray();
         $data = [
             'title' => 'Package',
             'data' => $contents,
@@ -41,7 +41,7 @@ class Package extends ResourcePresenter
      */
     public function show($id = null)
     {
-        $package = $this->packageModel->get_package_by_id_api($id)->getRowArray();
+        $package = $this->packageModel->get_package_by_id($id)->getRowArray();
         if (empty($package)) {
             return redirect()->to(substr(current_url(), 0, -strlen($id)));
         }

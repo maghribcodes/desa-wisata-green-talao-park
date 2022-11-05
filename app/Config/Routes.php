@@ -59,11 +59,11 @@ $routes->group('webnagari', function ($routes) {
 // App
 $routes->group('web', ['namespace' => 'App\Controllers\Web'], function ($routes) {
     $routes->presenter('gtp');
-    $routes->get('/', 'Gtp::information');
+    $routes->get('/', 'Gtp::index');
 
     $routes->group('tracking', function ($routes) {
         $routes->presenter('tracking');
-        $routes->get('/', 'Tracking::detail');
+        $routes->get('/', 'Tracking::index');
     });
 
     // $routes->presenter('attraction');
@@ -73,9 +73,9 @@ $routes->group('web', ['namespace' => 'App\Controllers\Web'], function ($routes)
         $routes->get('/', 'Talao::detail');
     });
 
+    $routes->presenter('event');
 
-    // $routes->presenter('event');
-    // $routes->presenter('package');
+    $routes->presenter('package');
 
     // Profile
 });
@@ -83,12 +83,9 @@ $routes->group('web', ['namespace' => 'App\Controllers\Web'], function ($routes)
 // API
 $routes->group('api', ['namespace' => 'App\Controllers\Api'], function ($routes) {
     $routes->resource('gtp');
-    $routes->get('information', 'Gtp::information');
     $routes->post('village', 'Village::getData');
 
     $routes->resource('tracking');
-    $routes->get('detail', 'Tracking::detail');
-    $routes->post('tracking', 'Tracking::getData');
 
     $routes->resource('attraction');
 
@@ -96,8 +93,9 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], function ($routes)
     $routes->post('facility/findByRadius', 'Facility::findByRadius');
     $routes->post('facility/findByTrack', 'Facility::findByTrack');
 
-    // $routes->resource('event');
-    // $routes->resource('package');
+    $routes->resource('event');
+
+    $routes->resource('package');
 });
 
 /*

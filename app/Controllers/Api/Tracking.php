@@ -27,10 +27,6 @@ class Tracking extends ResourceController
      */
     public function index()
     {
-    }
-
-    public function detail()
-    {
         $contents = $this->attractionModel->get_tracking()->getResultArray();
 
         for ($index = 0; $index < count($contents); $index++) {

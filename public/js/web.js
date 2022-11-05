@@ -85,7 +85,7 @@ function digitVillage() {
                 fillColor:'#00b300',
                 strokeWeight:0.5,
                 strokeColor:'#ffffff',
-                fillOpacity: 0.4,
+                fillOpacity: 0.1,
                 clickable: false
             });
             digitasi.setMap(map);
@@ -275,8 +275,8 @@ function digitTracking() {
             digitasi.setStyle({
                 fillColor:'#0001ff',
                 strokeWeight:2.5,
-                strokeColor:'#129930',
-                fillOpacity: 1,
+                strokeColor:'#a5fc9f',
+                fillOpacity: 0.1,
                 clickable: false
             });
             digitasi.setMap(map);
@@ -318,16 +318,15 @@ function objectMarker(id, lat, lng, anim = true) {
 
     let icon;
     if (id.substring(0,1) === "A") {
-        icon = baseUrl + '/media/icon/marker_at.png';
-    } else if (id.substring(0,2) === "FC") {
-        
-        icon = baseUrl + '/media/icon/marker_cp.png';
-    } else if (id.substring(0,2) === "WP") {
-        icon = baseUrl + '/media/icon/marker_wp.png';
-    } else if (id.substring(0,2) === "SP") {
-        icon = baseUrl + '/media/icon/marker_sp.png';
+        if(id === "A0001") {
+            icon = baseUrl + '/media/icon/tracking.png';
+        } else {
+            icon = baseUrl + '/media/icon/talao.png';
+        }
     } else if (id.substring(0,2) === "EV") {
-        icon = baseUrl + '/media/icon/marker_ev.png';
+        icon = baseUrl + '/media/icon/event.png';
+    } else if (id.substring(0,1) === "P") {
+        icon = baseUrl + '/media/icon/package.png';
     }
 
     markerOption = {
@@ -401,25 +400,20 @@ function objectInfoWindow(id){
                 let data = response.data;
                 let evid = data.id;
                 let name = data.name;
-                let lat = data.lat;
-                let lng = data.lng;
-                // let ticket_price = (data.ticket_price == 0) ? 'Free' : 'Rp ' + data.ticket_price;
-                // let category = data.category;
-                // let date_next = new Date(data.date_next);
-                // let next = date_next.getDate() + ' ' + months[date_next.getMonth()] + ' ' + date_next.getFullYear();
+                let type = data.type;
+                // let lat = data.lat;
+                // let lng = data.lng;
+                let price = (data.price == 0) ? 'Free' : 'Rp ' + data.price;
 
                 content =
                     '<div class="text-center">' +
                     '<p class="fw-bold fs-6">'+ name +'</p> <br>' +
-                    // '<p><i class="fa-solid fa-layer-group me-2"></i> '+ category +'</p>' +
-                    // '<p><i class="fa-solid fa-money-bill me-2"></i> '+ ticket_price +'</p>' +
-                    // '<p><i class="fa-solid fa-calendar-days me-2"></i> '+ next +'</p>' +
+                    '<p><i class="fa-solid fa-spa"></i> '+ type +'</p>' +
+                    '<p><i class="fa-solid fa-money-bill me-2"></i> '+ price +'</p>' +
                     '</div>';
                 contentButton =
                     '<br><div class="text-center">' +
-                    '<a title="Route" class="btn icon btn-outline-primary mx-1" id="routeInfoWindow" onclick="routeTo('+lat+', '+lng+')"><i class="fa-solid fa-road"></i></a>' +
                     '<a title="Info" class="btn icon btn-outline-primary mx-1" target="_blank" id="infoInfoWindow" href='+baseUrl+'/web/event/'+evid+'><i class="fa-solid fa-info"></i></a>' +
-                    '<a title="Nearby" class="btn icon btn-outline-primary mx-1" id="nearbyInfoWindow" onclick="openNearby(`'+ evid +'`,'+ lat +','+ lng +')"><i class="fa-solid fa-compass"></i></a>' +
                     '</div>'
 
                 if (currentUrl.includes(id)) {
@@ -438,18 +432,20 @@ function objectInfoWindow(id){
                 let data = response.data;
                 let paid = data.id;
                 let name = data.name;
-                let lat = data.lat;
-                let lng = data.lng;
+                // let lat = data.lat;
+                // let lng = data.lng;
+                let type_name = data.type_name;
+                let price = (data.price == 0) ? 'Free' : 'Rp ' + data.price;
 
                 content =
                     '<div class="text-center">' +
                     '<p class="fw-bold fs-6">'+ name +'</p> <br>' +
+                    '<p><i class="fa-solid fa-spa"></i> '+ type_name +'</p>' +
+                    '<p><i class="fa-solid fa-money-bill me-2"></i> '+ price +'</p>' +
                     '</div>';
                 contentButton =
                     '<br><div class="text-center">' +
-                    '<a title="Route" class="btn icon btn-outline-primary mx-1" id="routeInfoWindow" onclick="routeTo('+lat+', '+lng+')"><i class="fa-solid fa-road"></i></a>' +
                     '<a title="Info" class="btn icon btn-outline-primary mx-1" target="_blank" id="infoInfoWindow" href='+baseUrl+'/web/event/'+paid+'><i class="fa-solid fa-info"></i></a>' +
-                    '<a title="Nearby" class="btn icon btn-outline-primary mx-1" id="nearbyInfoWindow" onclick="openNearby(`'+ paid +'`,'+ lat +','+ lng +')"><i class="fa-solid fa-compass"></i></a>' +
                     '</div>'
 
                 if (currentUrl.includes(id)) {
@@ -993,8 +989,55 @@ function displayTrackResult(category, response) {
             '</td>'+
             '</tr>';
         $('#data-'+category).append(row);
-        objectMarker(item.facility_id, item.lat, item.long);
+        objectMarkerFacility(item.facility_id, item.lat, item.long, item.type_id);
     }
+}
+
+function objectMarkerFacility(id, lat, lng, type, anim = true) {
+    google.maps.event.clearListeners(map, 'click');
+    let pos = new google.maps.LatLng(lat, lng);
+    let marker = new google.maps.Marker();
+
+    let icon;
+
+    if(type === "F0001") {
+        icon = baseUrl + '/media/icon/culinary.png';
+    } else if (type === "F0002"){
+        icon = baseUrl + '/media/icon/gazebo.png';
+    } else if (type === "F0003"){
+        icon = baseUrl + '/media/icon/outbond.png';
+    } else if (type === "F0004"){
+        icon = baseUrl + '/media/icon/parking.png';
+    } else if (type === "F0005"){
+        icon = baseUrl + '/media/icon/bathroom.png';
+    } else if (type === "F0006"){
+        icon = baseUrl + '/media/icon/selfie.png';
+    } else if (type === "F0007"){
+        icon = baseUrl + '/media/icon/souvenir.png';
+    } else if (type === "F0008"){
+        icon = baseUrl + '/media/icon/treehouse.png';
+    } else if (type === "F0009"){
+        icon = baseUrl + '/media/icon/tower.png';
+    } else if (type === "F0010"){
+        icon = baseUrl + '/media/icon/worship.png';
+    }
+
+    markerOption = {
+        position: pos,
+        icon: icon,
+        animation: google.maps.Animation.DROP,
+        map: map,
+    }
+    marker.setOptions(markerOption);
+    if (!anim) {
+        marker.setAnimation(null);
+    }
+    marker.addListener('click', () => {
+        infoWindow.close();
+        objectInfoWindow(id);
+        infoWindow.open(map, marker);
+    });
+    markerArray[id] = marker;
 }
 
 // Add nearby object to corresponding table
@@ -1045,7 +1088,7 @@ function displayNearbyResult(category, response) {
             '</td>'+
             '</tr>';
         $('#data-'+category).append(row);
-        objectMarker(item.id, item.lat, item.lng);
+        objectMarkerFacility(item.id, item.lat, item.lng, item.type_id);
     }
 }
 
@@ -1058,20 +1101,11 @@ function infoModal(id) {
             dataType: 'json',
             success: function (response) {
                 let item = response.data;
-                let open = item.open.substring(0, item.open.length - 3);
-                let close = item.close.substring(0, item.close.length - 3);
 
                 title = '<h3>'+item.name+'</h3>';
                 content =
-                    '<div class="text-start">'+
-                    '<p><span class="fw-bold">Address</span>: '+ item.address +'</p>'+
-                    '<p><span class="fw-bold">Open</span>: '+ open +' - '+ close+' WIB</p>'+
-                    '<p><span class="fw-bold">Contact Person:</span> '+ item.contact_person+'</p>'+
-                    '<p><span class="fw-bold">Capacity</span>: '+ item.capacity+'</p>'+
-                    '<p><span class="fw-bold">Employee</span>: '+ item.employee+'</p>'+
-                    '</div>'+
                     '<div>' +
-                    '<img src="/media/photos/'+item.gallery[0]+'" alt="'+ item.name +'" class="w-50">' +
+                    '<img src="/media/photos/facility/'+item.gallery[0]+'" alt="'+ item.name +'" class="w-50">' +
                     '</div>';
 
                 Swal.fire({
@@ -1087,30 +1121,74 @@ function infoModal(id) {
 // Create legend
 function getLegend() {
     const icons = {
-        rg :{
-            name: 'Attraction',
-            icon: baseUrl + '/media/icon/marker_at.png',
+        tracking :{
+            name: 'Tracking Mangrove',
+            icon: baseUrl + '/media/icon/tracking.png',
         },
-        ev :{
+        talao :{
+            name: 'Estuaria/Talao',
+            icon: baseUrl + '/media/icon/talao.png',
+        },
+        event :{
             name: 'Event',
-            icon: baseUrl + '/media/icon/marker_ev.png',
+            icon: baseUrl + '/media/icon/event.png',
+        },
+        package :{
+            name: 'Package',
+            icon: baseUrl + '/media/icon/package.png',
+        },
+        package :{
+            name: 'Package',
+            icon: baseUrl + '/media/icon/package.png',
         },
         cp :{
             name: 'Culinary Place',
-            icon: baseUrl + '/media/icon/marker_cp.png',
+            icon: baseUrl + '/media/icon/culinary.png',
         },
-        wp :{
-            name: 'Worship Place',
-            icon: baseUrl + '/media/icon/marker_wp.png',
+        ga :{
+            name: 'Gazebo',
+            icon: baseUrl + '/media/icon/gazebo.png',
+        },
+        ho :{
+            name: 'Homestay',
+            icon: baseUrl + '/media/icon/homestay.png',
+        },
+        of :{
+            name: 'Outbond Field',
+            icon: baseUrl + '/media/icon/outbond.png',
+        },
+        pa :{
+            name: 'Parking Area',
+            icon: baseUrl + '/media/icon/parking.png',
+        },
+        pb :{
+            name: 'Public Bathroom',
+            icon: baseUrl + '/media/icon/bathroom.png',
+        },
+        sa :{
+            name: 'Selfie Area',
+            icon: baseUrl + '/media/icon/selfie.png',
         },
         sp :{
             name: 'Souvenir Place',
-            icon: baseUrl + '/media/icon/marker_sp.png',
+            icon: baseUrl + '/media/icon/souvenir.png',
+        },
+        th :{
+            name: 'Tree House',
+            icon: baseUrl + '/media/icon/treehouse.png',
+        },
+        vw :{
+            name: 'Viewing Tower',
+            icon: baseUrl + '/media/icon/tower.png',
+        },
+        wp :{
+            name: 'Worship Place',
+            icon: baseUrl + '/media/icon/worship.png',
         },
     }
 
-    const title = '<p class="fw-bold fs-6">Legend</p>';
-    $('#legend').append(title);
+    // const title = '<p class="fw-bold fs-6">Legend</p>';
+    // $('#legend').append(title);
 
     for (key in icons) {
         const type = icons[key];

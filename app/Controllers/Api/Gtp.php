@@ -27,10 +27,6 @@ class Gtp extends ResourceController
      */
     public function index()
     {
-    }
-
-    public function information()
-    {
         $contents = $this->gtpModel->get_gtp()->getResultArray();
 
         for ($index = 0; $index < count($contents); $index++) {

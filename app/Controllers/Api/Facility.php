@@ -13,13 +13,13 @@ class Facility extends ResourceController
     use ResponseTrait;
 
     protected $facilityModel;
-    protected $GalleryFacilityModel;
+    protected $galleryFacilityModel;
     protected $detailFacilityModel;
 
     public function __construct()
     {
         $this->facilityModel = new FacilityModel();
-        $this->GalleryFacilityModel = new GalleryFacilityModel();
+        $this->galleryFacilityModel = new GalleryFacilityModel();
         $this->detailFacilityModel = new DetailFacilityModel();
     }
 
