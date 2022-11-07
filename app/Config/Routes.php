@@ -43,17 +43,12 @@ $routes->get('/login', 'Home::login');
 $routes->get('/register', 'Home::register');
 
 $routes->group('web', function ($routes) {
-    // $routes->get('/', 'Home::web');
 
     $routes->group('profile', function ($routes) {
         $routes->get('/', 'Home::profile');
         $routes->get('update', 'Home::update');
         $routes->get('changePassword', 'Home::changePassword');
     });
-});
-
-$routes->group('webnagari', function ($routes) {
-    $routes->get('/', 'Home::web2');
 });
 
 // App
@@ -77,12 +72,18 @@ $routes->group('web', ['namespace' => 'App\Controllers\Web'], function ($routes)
 
     $routes->presenter('package');
 
+    $routes->presenter('ulakan');
+
+    $routes->presenter('homestay');
+    $routes->presenter('culinaryPlace');
+
     // Profile
 });
 
 // API
 $routes->group('api', ['namespace' => 'App\Controllers\Api'], function ($routes) {
     $routes->resource('gtp');
+
     $routes->post('village', 'Village::getData');
 
     $routes->resource('tracking');
@@ -96,6 +97,13 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], function ($routes)
     $routes->resource('event');
 
     $routes->resource('package');
+    $routes->post('package/findByName', 'Package::findByName');
+    $routes->get('package/type', 'Package::type');
+
+    $routes->resource('homestay');
+    $routes->resource('culinaryPlace');
+    $routes->resource('souvenirPlace');
+    $routes->resource('worshipPlace');
 });
 
 /*

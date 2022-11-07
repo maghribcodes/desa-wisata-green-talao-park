@@ -103,6 +103,47 @@ function initMap3() {
     digitTalao();
 }
 
+function initMap4(lat = -0.7005628110637381, lng = 100.19529523662331) {
+    directionsService = new google.maps.DirectionsService();
+    const center = new google.maps.LatLng(lat, lng);
+    map = new google.maps.Map(document.getElementById("googlemaps"), {
+        zoom: 15,
+        center: center,
+        mapTypeId: 'roadmap',
+    });
+    var rendererOptions = {
+        map: map
+    }
+    map.set('styles', customStyled);
+    directionsRenderer = new google.maps.DirectionsRenderer(rendererOptions);
+    digitNagari();
+}
+
+// Display nagari digitizing
+function digitNagari() {
+    const digitasi = new google.maps.Data();
+    $.ajax({
+        url: baseUrl + '/api/village',
+        type: 'POST',
+        data: {
+            digitasi: 'V0001'
+        },
+        dataType: 'json',
+        success: function (response) {
+            const data = response.data;
+            digitasi.addGeoJson(data);
+            digitasi.setStyle({
+                fillColor:'#00b300',
+                strokeWeight:0.5,
+                strokeColor:'#ffffff',
+                fillOpacity: 0.1,
+                clickable: false
+            });
+            digitasi.setMap(map);
+        }
+    });
+}
+
 // Remove user location
 function clearUser() {
     userLat = 0;
@@ -327,6 +368,14 @@ function objectMarker(id, lat, lng, anim = true) {
         icon = baseUrl + '/media/icon/event.png';
     } else if (id.substring(0,1) === "P") {
         icon = baseUrl + '/media/icon/package.png';
+    } else if (id.substring(0,2) === "HO") {
+        icon = baseUrl + '/media/icon/homestay.png';
+    } else if (id.substring(0,2) === "CP") {
+        icon = baseUrl + '/media/icon/culinary.png';
+    } else if (id.substring(0,2) === "SP") {
+        icon = baseUrl + '/media/icon/souvenir.png';
+    } else if (id.substring(0,2) === "WP") {
+        icon = baseUrl + '/media/icon/worship.png';
     }
 
     markerOption = {
@@ -445,7 +494,7 @@ function objectInfoWindow(id){
                     '</div>';
                 contentButton =
                     '<br><div class="text-center">' +
-                    '<a title="Info" class="btn icon btn-outline-primary mx-1" target="_blank" id="infoInfoWindow" href='+baseUrl+'/web/event/'+paid+'><i class="fa-solid fa-info"></i></a>' +
+                    '<a title="Info" class="btn icon btn-outline-primary mx-1" target="_blank" id="infoInfoWindow" href='+baseUrl+'/web/package/'+paid+'><i class="fa-solid fa-info"></i></a>' +
                     '</div>'
 
                 if (currentUrl.includes(id)) {
@@ -470,13 +519,140 @@ function objectInfoWindow(id){
                     '</div>';
 
                 infoWindow.setContent(content);
+            }
+        });
+    } else if (id.substring(0,2) === "HO") {
+        $.ajax({
+            url: baseUrl + '/api/homestay/' + id,
+            dataType: 'json',
+            success: function (response) {
+                let data = response.data;
+                let hoid = data.id;
+                let name = data.name;
+                let lat = data.lat;
+                let lng = data.lng;
+                let price = (data.price == 0) ? 'Free' : 'Rp ' + data.price;
+                let address = data.address;
 
-                // if (currentUrl.includes(id)) {
-                //     infoWindow.setContent(content);
-                //     infoWindow.open(map, markerArray[paid])
-                // } else {
-                //     infoWindow.setContent(content + contentButton);
-                // }
+                content =
+                    '<div class="text-center">' +
+                    '<p class="fw-bold fs-6">'+ name +'</p> <br>' +
+                    '<p><i class="fa-solid fa-money-bill me-2"></i> '+ price +'</p>' +
+                    '<p><i class="fa-solid fa-map-pin"></i> '+ address +'</p>' +
+                    '</div>';
+                contentButton =
+                    '<br><div class="text-center">' +
+                    '<a title="Route" class="btn icon btn-outline-primary mx-1" id="routeInfoWindow" onclick="routeTo('+lat+', '+lng+')"><i class="fa-solid fa-road"></i></a>' +
+                    '<a title="Info" class="btn icon btn-outline-primary mx-1" target="_blank" id="infoInfoWindow" href='+baseUrl+'/web/homestay/'+hoid+'><i class="fa-solid fa-info"></i></a>' +
+                    '</div>'
+
+                if (currentUrl.includes(id)) {
+                    infoWindow.setContent(content);
+                    infoWindow.open(map, markerArray[hoid])
+                } else {
+                    infoWindow.setContent(content + contentButton);
+                }
+            }
+        });
+    } else if (id.substring(0,2) === "CP") {
+        $.ajax({
+            url: baseUrl + '/api/culinaryPlace/' + id,
+            dataType: 'json',
+            success: function (response) {
+                let data = response.data;
+                let cpid = data.id;
+                let name = data.name;
+                let lat = data.lat;
+                let lng = data.lng;
+                let contact = data.contact_person;
+                let address = data.address;
+
+                content =
+                    '<div class="text-center">' +
+                    '<p class="fw-bold fs-6">'+ name +'</p> <br>' +
+                    '<p><i class="fa-solid fa-address-book"></i> '+ contact +'</p>' +
+                    '<p><i class="fa-solid fa-map-pin"></i> '+ address +'</p>' +
+                    '</div>';
+                contentButton =
+                    '<br><div class="text-center">' +
+                    '<a title="Route" class="btn icon btn-outline-primary mx-1" id="routeInfoWindow" onclick="routeTo('+lat+', '+lng+')"><i class="fa-solid fa-road"></i></a>' +
+                    '<a title="Info" class="btn icon btn-outline-primary mx-1" target="_blank" id="infoInfoWindow" href='+baseUrl+'/web/culinaryPlace/'+cpid+'><i class="fa-solid fa-info"></i></a>' +
+                    '</div>'
+
+                if (currentUrl.includes(id)) {
+                    infoWindow.setContent(content);
+                    infoWindow.open(map, markerArray[cpid])
+                } else {
+                    infoWindow.setContent(content + contentButton);
+                }
+            }
+        });
+    }
+
+    else if (id.substring(0,2) === "SP") {
+        $.ajax({
+            url: baseUrl + '/api/souvenirPlace/' + id,
+            dataType: 'json',
+            success: function (response) {
+                let data = response.data;
+                let spid = data.id;
+                let name = data.name;
+                let lat = data.lat;
+                let lng = data.lng;
+                let contact = data.contact_person;
+                let address = data.address;
+
+                content =
+                    '<div class="text-center">' +
+                    '<p class="fw-bold fs-6">'+ name +'</p> <br>' +
+                    '<p><i class="fa-solid fa-address-book"></i> '+ contact +'</p>' +
+                    '<p><i class="fa-solid fa-map-pin"></i> '+ address +'</p>' +
+                    '</div>';
+                contentButton =
+                    '<br><div class="text-center">' +
+                    '<a title="Route" class="btn icon btn-outline-primary mx-1" id="routeInfoWindow" onclick="routeTo('+lat+', '+lng+')"><i class="fa-solid fa-road"></i></a>' +
+                    '<a title="Info" class="btn icon btn-outline-primary mx-1" target="_blank" id="infoInfoWindow" href='+baseUrl+'/web/homestay/'+spid+'><i class="fa-solid fa-info"></i></a>' +
+                    '</div>'
+
+                if (currentUrl.includes(id)) {
+                    infoWindow.setContent(content);
+                    infoWindow.open(map, markerArray[spid])
+                } else {
+                    infoWindow.setContent(content + contentButton);
+                }
+            }
+        });
+    } else if (id.substring(0,2) === "WP") {
+        $.ajax({
+            url: baseUrl + '/api/worshipPlace/' + id,
+            dataType: 'json',
+            success: function (response) {
+                let data = response.data;
+                let wpid = data.id;
+                let name = data.name;
+                let lat = data.lat;
+                let lng = data.lng;
+                let capacity = data.capacity;
+                let address = data.address;
+
+                content =
+                    '<div class="text-center">' +
+                    '<p class="fw-bold fs-6">'+ name +'</p> <br>' +
+                    '<p><i class="fa-solid fa-person-praying"></i> '+ capacity +'</p>' +
+                    '<p><i class="fa-solid fa-map-pin"></i> '+ address +'</p>' +
+                    '</div>';
+                contentButton =
+                    '<br><div class="text-center">' +
+                    '<a title="Route" class="btn icon btn-outline-primary mx-1" id="routeInfoWindow" onclick="routeTo('+lat+', '+lng+')"><i class="fa-solid fa-road"></i></a>' +
+                    '<a title="Info" class="btn icon btn-outline-primary mx-1" target="_blank" id="infoInfoWindow" href='+baseUrl+'/web/homestay/'+wpid+'><i class="fa-solid fa-info"></i></a>' +
+                    '</div>'
+
+                if (currentUrl.includes(id)) {
+                    infoWindow.setContent(content);
+                    infoWindow.open(map, markerArray[wpid])
+                } else {
+                    infoWindow.setContent(content + contentButton);
+                }
             }
         });
     }
@@ -598,57 +774,30 @@ function focusObject(id) {
 }
 
 // display objects by feature used
-// function displayFoundObject(response) {
-//     $('#table-data').empty();
-//     let data = response.data;
-//     let counter = 1;
-//     const months = [
-//         'January',
-//         'February',
-//         'March',
-//         'April',
-//         'May',
-//         'June',
-//         'July',
-//         'August',
-//         'September',
-//         'October',
-//         'November',
-//         'December'
-//     ];
-//     for (i in data) {
-//         let item = data[i];
-//         let row;
-//         if (item.hasOwnProperty('date_next')){
-//             let date_next = new Date(item.date_next);
-//             let next = date_next.getDate() + ' ' + months[date_next.getMonth()] + ' ' + date_next.getFullYear();
-//             row =
-//                 '<tr>'+
-//                 '<td>'+ counter +'</td>' +
-//                 '<td class="fw-bold">'+ item.name +'<br><span class="text-muted">' + next + '</span></td>' +
-//                 '<td>'+
-//                 '<a data-bs-toggle="tooltip" data-bs-placement="bottom" title="More Info" class="btn icon btn-primary mx-1" onclick="focusObject(`'+ item.id +'`);">' +
-//                 '<span class="material-symbols-outlined">info</span>' +
-//                 '</a>' +
-//                 '</td>'+
-//                 '</tr>';
-//         } else {
-//             row =
-//                 '<tr>'+
-//                 '<td>'+ counter +'</td>' +
-//                 '<td class="fw-bold">'+ item.name +'</td>' +
-//                 '<td>'+
-//                 '<a data-bs-toggle="tooltip" data-bs-placement="bottom" title="More Info" class="btn icon btn-primary mx-1" onclick="focusObject(`'+ item.id +'`);">' +
-//                 '<span class="material-symbols-outlined">info</span>' +
-//                 '</a>' +
-//                 '</td>'+
-//                 '</tr>';
-//         }
-//         $('#table-data').append(row);
-//         objectMarker(item.id, item.lat, item.lng);
-//         counter++;
-//     }
-// }
+function displayFoundObject(response) {
+    $('#table-data').empty();
+    let data = response.data;
+    let counter = 1;
+    for (i in data) {
+        let item = data[i];
+        let row;
+
+            row =
+                '<tr>'+
+                '<td>'+ counter +'</td>' +
+                '<td class="fw-bold">'+ item.name +'</td>' +
+                '<td>'+
+                '<a data-bs-toggle="tooltip" data-bs-placement="bottom" title="More Info" class="btn icon btn-primary mx-1" onclick="focusObject(`'+ item.id +'`);">' +
+                '<span class="material-symbols-outlined">info</span>' +
+                '</a>' +
+                '</td>'+
+                '</tr>';
+
+        $('#table-data').append(row);
+        objectMarker(item.id, item.lat, item.lng);
+        counter++;
+    }
+}
 
 // display steps of direction to selected route
 function showSteps(directionResult) {
@@ -1218,5 +1367,126 @@ function showPreview(input) {
             $('#avatar-preview').attr('src', e.target.result).width(300).height(300);
         };
         reader.readAsDataURL(input.files[0]);
+    }
+}
+
+// Find object by name
+function findByName(category) {
+    clearRadius();
+    clearRoute();
+    clearMarker();
+    clearUser();
+    destinationMarker.setMap(null);
+    google.maps.event.clearListeners(map, 'click');
+    closeNearby();
+
+    let name;
+    if (category === 'PA') {
+        name = document.getElementById('namePA').value;
+        $.ajax({
+            url: baseUrl + '/api/package/findByName',
+            type: 'POST',
+            data: {
+                name: name,
+            },
+            dataType: 'json',
+            success: function (response) {
+                displayFoundObject(response);
+                boundToObject();
+            }
+        });
+    }
+}
+
+// Get list of sackage type
+// function getType() {
+//     let type;
+//     $('#typePASelect').empty()
+//     $.ajax({
+//         url: baseUrl + '/api/package/type',
+//         dataType: 'json',
+//         success: function (response) {
+//             let data = response.data;
+//             for (i in data) {
+//                 let item = data[i];
+//                 type =
+//                     '<option value="'+ item.id +'">'+ item.type_name +'</option>';
+//                 $('#typePASelect').append(type);
+//             }
+//         }
+//     });
+// }
+
+// Show All in Explore Ulakan
+function showMap(id = null) {
+    let URI;
+    
+    clearMarker();
+    clearRadius();
+    clearRoute();
+
+    if (id == 'cp') {
+        URI = baseUrl + '/api/culinaryPlace'
+    } else if (id == 'ho') {
+        URI = baseUrl + '/api/homestay'
+    } else if (id == 'sp') {
+        URI = baseUrl + '/api/souvenirPlace'
+    } else if (id == 'wp') {
+        URI = baseUrl + '/api/worshipPlace'
+    }
+
+    // currentUrl = '';
+    $.ajax({
+        url: URI,
+        dataType: 'json',
+        success: function (response) {
+            let data = response.data
+            for(i in data) {
+                let item = data[i];
+                // currentUrl = currentUrl + item.id;
+                // currentUrl = currentUrl;
+                objectMarker(item.id, item.lat, item.lng);
+            }
+            boundToObject();
+        }
+    })
+}
+
+function showModal(id) {
+    let title, content, gallery;
+    if (id.substring(0,2) === "HO") {
+        $.ajax({
+            url: baseUrl + '/api/homestay/' + id,
+            dataType: 'json',
+            success: function (response) {
+                let item = response.data;
+                title = '<h3>'+item.name+'</h3>';
+                gallery = item.gallery;
+                
+                content =
+                    '<div class="text-start">'+
+                    '<p><span class="fw-bold">Address</span>: '+ item.address +'</p>'+
+                    '<p><span class="fw-bold">Contact Person:</span> '+ item.contact_person+'</p>'+
+                    '</div>'+
+                    '<div>' +
+                    
+                    + '</div>';
+
+                // for (i=0; i <= gallery.length; i++) {
+                //     tes = '<img src="/media/photos/homestay/'+ item.gallery[i]+'" class="w-50">'
+                // }
+
+                gallery.forEach(function(g) {
+                    tes = '<img src="/media/photos/homestay/'+g+'" class="w-50">'
+                });
+
+                Swal.fire({
+                    title: title,
+                    html: tes,
+                    width: '50%',
+                    position: 'top'
+                });
+            }
+        });
     }
 }

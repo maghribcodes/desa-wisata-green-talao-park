@@ -11,7 +11,7 @@ $uri3 = $uri[3] ?? '';
         <div class="sidebar-menu">
             <div class="d-flex flex-column">
                 <div class="d-flex justify-content-center avatar avatar-xl me-3" id="avatar-sidebar">
-                    <img src="<?= base_url('media/photos/default.jpg'); ?>" alt="" srcset="">
+                    <img src="<?= base_url('media/photos/talao.jpg'); ?>" alt="" srcset="">
                 </div>
                 <div class="p-2 d-flex justify-content-center">Hello, Visitor</div>
                 <ul class="menu">

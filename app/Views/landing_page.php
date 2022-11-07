@@ -75,9 +75,19 @@
                         Desa Wisata<br>Green Talao Park<br>(GTP) Ulakan
                     </h1>
                     <div class="d-flex align-items-center pt-4 animated slideInDown">
-                        <a href="/web" class="btn btn-primary py-sm-3 px-3 px-sm-3 me-4">Explore GTP</a>
-                        <a href="/webnagari" class="btn btn-primary py-sm-3 px-3 px-sm-3 me-4">Explore Nagari</a>
-                        <button type="button" class="btn-play" data-bs-toggle="modal" data-src="<?= base_url('media/videos/landing_page.mp4'); ?>" data-bs-target="#videoModal">
+                        <a href="/web" class="btn btn-primary py-sm-3 px-3 px-sm-5 me-5"
+                        >Explore</a
+                        >
+                        <!-- <a href="/web" class="btn btn-primary py-sm-3 px-3 px-sm-5 me-5"
+                        >Explore Ulakan</a
+                        > -->
+                        <button
+                                type="button"
+                                class="btn-play"
+                                data-bs-toggle="modal"
+                                data-src="<?= base_url('media/videos/landing_page.mp4'); ?>"
+                                data-bs-target="#videoModal"
+                        >
                             <span></span>
                         </button>
                         <h6 class="text-white m-0 ms-4 d-none d-sm-block">Watch Video</h6>
@@ -152,7 +162,7 @@
                     <h5 class="mb-3">
                         <i class="far fa-check-circle text-primary me-3"></i>Wisata Kuliner
                     </h5>
-                    <!-- <a class="btn btn-primary py-3 px-5 mt-3" href="/web">Explore GTP</a> -->
+                    <a class="btn btn-primary py-3 px-5 mt-3" href="/web">Explore</a>
                 </div>
                 <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.5s">
                     <div class="img-border">

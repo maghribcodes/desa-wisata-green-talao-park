@@ -49,21 +49,6 @@ class Home extends BaseController
         return view('auth/register', $data);
     }
 
-    public function web()
-    {
-    }
-
-    public function web2()
-    {
-        $contents = $this->villageModel->get_gtp()->getResultArray();
-        $data = [
-            'title' => 'Ulakan',
-            'data' => $contents
-        ];
-
-        return view('web/nagari', $data);
-    }
-
     public function profile()
     {
         $data = [

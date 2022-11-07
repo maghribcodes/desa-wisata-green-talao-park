@@ -71,13 +71,13 @@ $uri3 = $uri[3] ?? '';
                                             </div>
                                         </div>
                                     </li>
-                                    <!-- Package by Category -->
-                                    <li class="submenu-item submenu-marker" id="pa-by-category">
+                                    <!-- Package by Type -->
+                                    <!-- <li class="submenu-item submenu-marker" id="pa-by-type">
                                         <a data-bs-toggle="collapse" href="#searchTypePA" role="button" aria-expanded="false" aria-controls="searchTypePA"><i class="fa-solid fa-check-to-slot me-3"></i>By Type</a>
                                         <div class="collapse mb-3" id="searchTypePA">
                                             <div class="d-grid">
                                                 <script>
-                                                    //getType();
+                                                    getType();
                                                 </script>
                                                 <fieldset class="form-group">
                                                     <select class="form-select" id="typePASelect">
@@ -88,10 +88,16 @@ $uri3 = $uri[3] ?? '';
                                                 </button>
                                             </div>
                                         </div>
-                                    </li>
+                                    </li> -->
                                 </ul>
                             </li>
                         </ul>
+                    </li>
+
+                    <li class="sidebar-item <?= ($uri1 == 'ulakan') ? 'active' : '' ?>">
+                        <a href="<?= base_url('/web/ulakan'); ?>" class="sidebar-link">
+                            <i class="fa-solid fa-map"></i><span>Explore Ulakan</span>
+                        </a>
                     </li>
 
                 </ul>

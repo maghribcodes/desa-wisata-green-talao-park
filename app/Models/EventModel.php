@@ -43,9 +43,8 @@ class EventModel extends Model
         $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
         $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.type,{$this->table}.description,
                         {$this->table}.price,{$this->table}.contact_person,{$this->table}.video_url";
-        $geoJson = "ST_AsGeoJSON({$this->table}.geom) AS geoJson";
         $query = $this->db->table($this->table)
-            ->select("{$columns}, {$coords}, {$geoJson}")
+            ->select("{$columns}, {$coords}")
             ->where('event.id', $id)
             ->get();
         return $query;
