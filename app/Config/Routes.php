@@ -76,6 +76,8 @@ $routes->group('web', ['namespace' => 'App\Controllers\Web'], function ($routes)
 
     $routes->presenter('homestay');
     $routes->presenter('culinaryPlace');
+    $routes->presenter('souvenirPlace');
+    $routes->presenter('worshipPlace');
 
     // Profile
 });

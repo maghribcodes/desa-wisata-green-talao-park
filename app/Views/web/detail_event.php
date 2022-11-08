@@ -50,7 +50,7 @@
             </div>
 
             <!-- Object Media -->
-            <?= $this->include('web/layouts/gallery_video_2'); ?>
+            <?= $this->include('web/layouts/our_gallery'); ?>
 
         </div>
 

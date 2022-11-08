@@ -2,20 +2,28 @@
 
 namespace App\Controllers;
 
-use App\Models\GtpModel;
-use App\Models\GalleryGtpModel;
+use CodeIgniter\Session\Session;
+use Myth\Auth\Config\Auth as AuthConfig;
 
 class Home extends BaseController
 {
-    protected $gtpModel;
-    protected $galleryGtpModel;
+        protected $auth;
 
-    protected $helpers = ['auth', 'url', 'filesystem'];
+        /**
+         * @var AuthConfig
+         */
+        protected $config;
+
+        /**
+         * @var Session
+         */
+        protected $session;
 
     public function __construct()
     {
-        $this->gtpModel = new GtpModel();
-        $this->galleryGtpModel = new GalleryGtpModel();
+        $this->session = service('session');
+        $this->config = config('Auth');
+        $this->auth = service('authentication');
     }
 
     public function index()
@@ -37,6 +45,7 @@ class Home extends BaseController
     {
         $data = [
             'title' => 'Login',
+            'config' => $this->config,
         ];
         return view('auth/login', $data);
     }
@@ -45,31 +54,32 @@ class Home extends BaseController
     {
         $data = [
             'title' => 'Register',
+            'config' => $this->config,
         ];
         return view('auth/register', $data);
     }
 
-    public function profile()
-    {
-        $data = [
-            'title' => 'My Profile',
-        ];
-        return view('profile/manage_profile', $data);
-    }
+    // public function profile()
+    // {
+    //     $data = [
+    //         'title' => 'My Profile',
+    //     ];
+    //     return view('profile/manage_profile', $data);
+    // }
 
-    public function update()
-    {
-        $data = [
-            'title' => 'Update Profile',
-        ];
-        return view('profile/update_profile', $data);
-    }
+    // public function update()
+    // {
+    //     $data = [
+    //         'title' => 'Update Profile',
+    //     ];
+    //     return view('profile/update_profile', $data);
+    // }
 
-    public function changePassword()
-    {
-        $data = [
-            'title' => 'Change Password',
-        ];
-        return view('profile/change_password', $data);
-    }
+    // public function changePassword()
+    // {
+    //     $data = [
+    //         'title' => 'Change Password',
+    //     ];
+    //     return view('profile/change_password', $data);
+    // }
 }

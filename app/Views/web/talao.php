@@ -69,7 +69,7 @@
                             </div>
 
                             <!-- Object Media -->
-                            <?= $this->include('web/layouts/gallery_video'); ?>
+                            <?= $this->include('web/layouts/our_gallery_video'); ?>
 
                         </div>
                     </div>

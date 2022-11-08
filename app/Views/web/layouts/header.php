@@ -11,6 +11,11 @@
                 <h4>Tourism Village</h4>
                 <p class="text-subtitle text-muted">Desa Wisata</p>
             </div>
+            <div class="col-12 col-md-6 order-md-2 order-first mb-md-0 mb-3">
+                <div class="float-end">
+                    <a href="<?= base_url('login'); ?>" class="btn btn-primary">Login</a>
+                </div>
+            </div>
             <!-- <div class="col-12 col-md-6 order-md-2 order-first mb-md-0 mb-3">
                 <div class="float-end">
                     <div class="btn-group mb-1">

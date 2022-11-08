@@ -611,7 +611,7 @@ function objectInfoWindow(id){
                 contentButton =
                     '<br><div class="text-center">' +
                     '<a title="Route" class="btn icon btn-outline-primary mx-1" id="routeInfoWindow" onclick="routeTo('+lat+', '+lng+')"><i class="fa-solid fa-road"></i></a>' +
-                    '<a title="Info" class="btn icon btn-outline-primary mx-1" target="_blank" id="infoInfoWindow" href='+baseUrl+'/web/homestay/'+spid+'><i class="fa-solid fa-info"></i></a>' +
+                    '<a title="Info" class="btn icon btn-outline-primary mx-1" target="_blank" id="infoInfoWindow" href='+baseUrl+'/web/souvenirPlace/'+spid+'><i class="fa-solid fa-info"></i></a>' +
                     '</div>'
 
                 if (currentUrl.includes(id)) {
@@ -644,7 +644,7 @@ function objectInfoWindow(id){
                 contentButton =
                     '<br><div class="text-center">' +
                     '<a title="Route" class="btn icon btn-outline-primary mx-1" id="routeInfoWindow" onclick="routeTo('+lat+', '+lng+')"><i class="fa-solid fa-road"></i></a>' +
-                    '<a title="Info" class="btn icon btn-outline-primary mx-1" target="_blank" id="infoInfoWindow" href='+baseUrl+'/web/homestay/'+wpid+'><i class="fa-solid fa-info"></i></a>' +
+                    '<a title="Info" class="btn icon btn-outline-primary mx-1" target="_blank" id="infoInfoWindow" href='+baseUrl+'/web/worshipPlace/'+wpid+'><i class="fa-solid fa-info"></i></a>' +
                     '</div>'
 
                 if (currentUrl.includes(id)) {
