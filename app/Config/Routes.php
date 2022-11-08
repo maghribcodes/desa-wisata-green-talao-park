@@ -36,11 +36,10 @@ $routes->set404Override();
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.
 
-//$routes->get('/', 'Home::index');
 $routes->get('/', 'Home::landingPage');
 $routes->get('/403', 'Home::error403');
-$routes->get('/login', 'Home::login');
-$routes->get('/register', 'Home::register');
+$routes->get('/login', 'Web\Admin::login');
+$routes->get('/register', 'Web\Admin::register');
 
 $routes->group('web', function ($routes) {
 
@@ -81,6 +80,27 @@ $routes->group('web', ['namespace' => 'App\Controllers\Web'], function ($routes)
 
     // Profile
 });
+
+// Dashboard
+$routes->group('dashboard', ['namespace' => 'App\Controllers\Web', 'filter' => 'role:admin'], function ($routes) {
+    $routes->get('/', 'Dashboard::index');
+    $routes->get('attraction', 'Dashboard::attraction');
+    $routes->get('event', 'Dashboard::event');
+    $routes->get('package', 'Dashboard::package');
+    $routes->get('facility', 'Dashboard::facility');
+
+    $routes->presenter('attraction');
+    $routes->presenter('event');
+    $routes->presenter('package');
+    $routes->presenter('facility');
+});
+
+// Upload files
+$routes->group('upload', ['namespace' => 'App\Controllers\Web'], function ($routes) {
+    $routes->post('photo', 'Upload::photo');
+    $routes->post('video', 'Upload::video');
+});
+
 
 // API
 $routes->group('api', ['namespace' => 'App\Controllers\Api'], function ($routes) {

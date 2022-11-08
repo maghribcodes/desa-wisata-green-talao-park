@@ -5,11 +5,13 @@ namespace App\Controllers\Web;
 use App\Models\EventModel;
 use App\Models\GalleryEventModel;
 use CodeIgniter\RESTful\ResourcePresenter;
+use CodeIgniter\Files\File;
 
 class Event extends ResourcePresenter
 {
     protected $eventModel;
     protected $galleryEventModel;
+    // protected $request;
 
     protected $helpers = ['auth', 'url', 'filesystem'];
 
@@ -67,5 +69,101 @@ class Event extends ResourcePresenter
             return view('dashboard/detail_event', $data);
         }
         return view('web/detail_event', $data);
+    }
+
+    /**
+     * Present a view to present a new single resource object
+     *
+     * @return mixed
+     */
+    public function new()
+    {
+        $data = [
+            'title' => 'New Event',
+        ];
+        return view('dashboard/event-form', $data);
+    }
+
+    /**
+     * Process the creation/insertion of a new resource object.
+     * This should be a POST.
+     *
+     * @return mixed
+     */
+    public function create()
+    {
+        $request = $this->request->getPost();
+
+        $id = $this->eventModel->get_new_id();
+
+        $requestData = [
+            'id' => $id,
+            'name' => $request['name'],
+            'type' => $request['type'],
+            'price' => $request['price'],
+            'description' => $request['description'],
+            'contact_person' => $request['contact_person']
+        ];
+        foreach ($requestData as $key => $value) {
+            if (empty($value)) {
+                unset($requestData[$key]);
+            }
+        }
+
+        $geojson = $request['geo-json'];
+
+        if (isset($request['video'])) {
+            $folder = $request['video'];
+            $filepath = WRITEPATH . 'uploads/' . $folder;
+            $filenames = get_filenames($filepath);
+            $vidFile = new File($filepath . '/' . $filenames[0]);
+            $vidFile->move(FCPATH . 'media/videos');
+            delete_files($filepath);
+            rmdir($filepath);
+            $requestData['video_url'] = $vidFile->getFilename();
+        }
+        $addEV = $this->eventModel->add_new_event($requestData, $geojson);
+
+        if (isset($request['gallery'])) {
+            $folders = $request['gallery'];
+            $gallery = array();
+            foreach ($folders as $folder) {
+                $filepath = WRITEPATH . 'uploads/' . $folder;
+                $filenames = get_filenames($filepath);
+                $fileImg = new File($filepath . '/' . $filenames[0]);
+                $fileImg->move(FCPATH . 'media/photos/event');
+                delete_files($filepath);
+                rmdir($filepath);
+                $gallery[] = $fileImg->getFilename();
+            }
+            $this->galleryEventModel->add_new_gallery($id, $gallery);
+        }
+
+        if ($addEV) {
+            return redirect()->to(base_url('dashboard/event') . '/' . $id);
+        } else {
+            return redirect()->back()->withInput();
+        }
+    }
+
+    public function edit($id = null)
+    {
+        $event = $this->eventModel->get_event_by_id($id)->getRowArray();
+        if (empty($event)) {
+            return redirect()->to('dashboard/event');
+        }
+
+        $list_gallery = $this->galleryEventModel->get_gallery($id)->getResultArray();
+        $galleries = array();
+        foreach ($list_gallery as $gallery) {
+            $galleries[] = $gallery['url'];
+        }
+        $event['gallery'] = $galleries;
+
+        $data = [
+            'title' => 'Edit Event',
+            'data' => $event,
+        ];
+        return view('dashboard/event-form', $data);
     }
 }

@@ -10,7 +10,7 @@ let userMarker = new google.maps.Marker();
 let destinationMarker = new google.maps.Marker();
 let routeArray = [], circleArray = [], markerArray = {};
 let bounds = new google.maps.LatLngBounds();
-// let selectedShape, drawingManager = new google.maps.drawing.DrawingManager();
+let selectedShape, drawingManager = new google.maps.drawing.DrawingManager();
 let customStyled = [
     {
         "elementType": "labels",
@@ -1398,7 +1398,7 @@ function findByName(category) {
     }
 }
 
-// Get list of sackage type
+// Get list of package type
 // function getType() {
 //     let type;
 //     $('#typePASelect').empty()
@@ -1452,41 +1452,237 @@ function showMap(id = null) {
     })
 }
 
-function showModal(id) {
-    let title, content, gallery;
-    if (id.substring(0,2) === "HO") {
-        $.ajax({
-            url: baseUrl + '/api/homestay/' + id,
-            dataType: 'json',
-            success: function (response) {
-                let item = response.data;
-                title = '<h3>'+item.name+'</h3>';
-                gallery = item.gallery;
-                
-                content =
-                    '<div class="text-start">'+
-                    '<p><span class="fw-bold">Address</span>: '+ item.address +'</p>'+
-                    '<p><span class="fw-bold">Contact Person:</span> '+ item.contact_person+'</p>'+
-                    '</div>'+
-                    '<div>' +
-                    
-                    + '</div>';
+// Set map to coordinate put by user
+function findCoords(object) {
+    clearMarker();
+    google.maps.event.clearListeners(map, 'click');
 
-                // for (i=0; i <= gallery.length; i++) {
-                //     tes = '<img src="/media/photos/homestay/'+ item.gallery[i]+'" class="w-50">'
-                // }
+    const lat = Number(document.getElementById('latitude').value);
+    const lng = Number(document.getElementById('longitude').value);
 
-                gallery.forEach(function(g) {
-                    tes = '<img src="/media/photos/homestay/'+g+'" class="w-50">'
-                });
+    if (lat === 0 || lng === 0 || isNaN(lat) || isNaN(lng)) {
+        return Swal.fire('Please input Lat and Long');
+    }
 
-                Swal.fire({
-                    title: title,
-                    html: tes,
-                    width: '50%',
-                    position: 'top'
-                });
-            }
+    let pos = new google.maps.LatLng(lat, lng);
+    map.panTo(pos);
+}
+
+// Unselect shape on drawing map
+function clearSelection() {
+    if (selectedShape) {
+        selectedShape.setEditable(false);
+        selectedShape = null;
+    }
+}
+
+// Make selected shape editable on maps
+function setSelection(shape) {
+    clearSelection();
+    selectedShape = shape;
+    shape.setEditable(true);
+}
+
+// Remove selected shape on maps
+function deleteSelectedShape() {
+    if (selectedShape) {
+        document.getElementById('latitude').value = '';
+        document.getElementById('longitude').value = '';
+        document.getElementById('geo-json').value = '';
+        clearMarker();
+        selectedShape.setMap(null);
+        // To show:
+        drawingManager.setOptions({
+            drawingMode: google.maps.drawing.OverlayType.POLYGON,
+            drawingControl: true
         });
     }
+}
+
+// Initialize drawing manager on maps
+function initDrawingManager(edit = false) {
+    const drawingManagerOpts = {
+        drawingMode: google.maps.drawing.OverlayType.POLYGON,
+        drawingControl: true,
+        drawingControlOptions: {
+            position: google.maps.ControlPosition.TOP_CENTER,
+            drawingModes: [
+                google.maps.drawing.OverlayType.POLYGON,
+            ]
+        },
+        polygonOptions: {
+            fillColor: 'blue',
+            strokeColor: 'blue',
+            editable: true,
+        },
+        map: map
+    };
+    drawingManager.setOptions(drawingManagerOpts);
+    let newShape;
+
+    if (!edit) {
+        google.maps.event.addListener(drawingManager, 'overlaycomplete', function(event) {
+            drawingManager.setOptions({
+                drawingControl: false,
+                drawingMode: null,
+            });
+            newShape = event.overlay;
+            newShape.type = event.type;
+            setSelection(newShape);
+            saveSelection(newShape);
+
+            google.maps.event.addListener(newShape, 'click', function() {
+                setSelection(newShape);
+            });
+            google.maps.event.addListener(newShape.getPath(), 'insert_at', () => {
+                saveSelection(newShape);
+            });
+            google.maps.event.addListener(newShape.getPath(), 'remove_at', () => {
+                saveSelection(newShape);
+            });
+            google.maps.event.addListener(newShape.getPath(), 'set_at', () => {
+                saveSelection(newShape);
+            });
+        });
+    } else {
+        drawingManager.setOptions({
+            drawingControl: false,
+            drawingMode: null,
+        });
+
+        newShape = drawGeom();
+        newShape.type = 'polygon';
+        setSelection(newShape);
+        saveSelection(newShape);
+
+        google.maps.event.addListener(newShape, 'click', function() {
+            setSelection(newShape);
+        });
+        google.maps.event.addListener(newShape.getPath(), 'insert_at', () => {
+            saveSelection(newShape);
+        });
+        google.maps.event.addListener(newShape.getPath(), 'remove_at', () => {
+            saveSelection(newShape);
+        });
+        google.maps.event.addListener(newShape.getPath(), 'set_at', () => {
+            saveSelection(newShape);
+        });
+    }
+
+    google.maps.event.addListener(map, 'click', clearSelection);
+    google.maps.event.addDomListener(document.getElementById('clear-drawing'), 'click', deleteSelectedShape);
+}
+
+// Get geoJSON of selected shape on map
+function saveSelection(shape) {
+
+    let centroid = [0.0, 0.0];
+    const paths = shape.getPath().getArray();
+
+    for (let i = 0; i < paths.length; i++) {
+        centroid[0] += paths[i].lat();
+        centroid[1] += paths[i].lng();
+    }
+    const totalPaths = paths.length;
+    centroid[0] = centroid[0] / totalPaths;
+    centroid[1] = centroid[1] / totalPaths;
+
+    let pos = new google.maps.LatLng(centroid[0], centroid[1]);
+    map.panTo(pos);
+
+    clearMarker();
+    let marker = new google.maps.Marker();
+    markerOption = {
+        position: pos,
+        animation: google.maps.Animation.DROP,
+        map: map,
+    }
+    marker.setOptions(markerOption);
+    markerArray['newRG'] = marker;
+
+    document.getElementById('latitude').value = centroid[0].toFixed(8);
+    document.getElementById('longitude').value = centroid[1].toFixed(8);
+
+    const dataLayer = new google.maps.Data();
+    dataLayer.add(new google.maps.Data.Feature({
+        geometry: new google.maps.Data.Polygon([shape.getPath().getArray()])
+    }));
+    dataLayer.toGeoJson(function (object) {
+        document.getElementById('geo-json').value = JSON.stringify(object.features[0].geometry);
+    });
+}
+
+// Draw current GeoJSON on drawing manager
+function drawGeom() {
+    const geoJSON = $('#geo-json').val();
+    if (geoJSON !== '') {
+        const geoObj = JSON.parse(geoJSON);
+        const coords = geoObj.coordinates[0];
+        let polygonCoords = []
+        for (i in coords) {
+            polygonCoords.push(
+                {lat: coords[i][1], lng: coords[i][0]}
+            );
+        }
+        const polygon = new google.maps.Polygon({
+            paths: polygonCoords,
+            fillColor: 'blue',
+            strokeColor: 'blue',
+            editable: true,
+        });
+        polygon.setMap(map);
+        return polygon;
+    }
+}
+
+// Delete selected object
+function deleteObject(id = null, name = null, user = false) {
+    if (id === null) {
+        return Swal.fire('ID cannot be null');
+    }
+
+    let content, apiUri;
+    if (id.substring(0,2) === 'RG') {
+        content = 'Rumah Gadang';
+        apiUri = 'rumahGadang/';
+    } else if (id.substring(0,2) === 'EV') {
+        content = 'Event';
+        apiUri = 'event/'
+    } else if (id.substring(0,2) === 'FC') {
+        content = 'Facility';
+        apiUri = 'facility/'
+    } else if (user === true) {
+        content = 'User';
+        apiUri = 'user/'
+    }
+
+    Swal.fire({
+        title: 'Delete ' + content + '?',
+        text: 'You are about to remove ' + name,
+        icon: 'warning',
+        showCancelButton: true,
+        denyButtonText: 'Delete',
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#343a40',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: baseUrl + '/api/' + apiUri + id,
+                type: 'DELETE',
+                dataType: 'json',
+                success: function (response) {
+                    if (response.status === 200) {
+                        Swal.fire('Deleted!', 'Successfully remove ' + name, 'success').then((result) => {
+                            if(result.isConfirmed) {
+                                document.location.reload();
+                            }
+                        });
+
+                    } else {
+                        Swal.fire('Failed', 'Delete ' + name + ' failed!', 'warning');
+                    }
+                }
+            });
+        }
+    });
 }

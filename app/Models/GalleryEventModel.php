@@ -32,4 +32,29 @@ class GalleryEventModel extends Model
             ->get();
         return $query;
     }
+
+    public function get_new_id()
+    {
+        $lastId = $this->db->table($this->table)->select('id')->orderBy('id', 'ASC')->get()->getLastRow('array');
+        $count = (int)substr($lastId['id'], 2);
+        $id = sprintf('GE%03d', $count + 1);
+        return $id;
+    }
+
+    public function add_new_gallery($id = null, $data = null)
+    {
+        $query = false;
+        foreach ($data as $gallery) {
+            $new_id = $this->get_new_id();
+            $content = [
+                'id' => $new_id,
+                'event_id' => $id,
+                'url' => $gallery,
+                // 'created_at' => Time::now(),
+                // 'updated_at' => Time::now(),
+            ];
+            $query = $this->db->table($this->table)->insert($content);
+        }
+        return $query;
+    }
 }

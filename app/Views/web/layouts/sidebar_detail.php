@@ -13,7 +13,18 @@ $uri3 = $uri[3] ?? '';
                 <div class="d-flex justify-content-center avatar avatar-xl me-3" id="avatar-sidebar">
                     <img src="<?= base_url('media/photos/talao.jpg'); ?>" alt="" srcset="">
                 </div>
-                <div class="p-2 d-flex justify-content-center">Hello, Visitor</div>
+                <?php if (logged_in()) : ?>
+                    <div class="p-2 text-center">
+                        <?php if (!empty(user()->fullname)) : ?>
+                            Hello, <span class="fw-bold"><?= user()->fullname; ?></span> <br> <span class="text-muted mb-0">@<?= user()->username; ?></span>
+                        <?php else : ?>
+                            Hello, <span class="fw-bold">@<?= user()->username; ?></span>
+                        <?php endif; ?>
+                    </div>
+                <?php else : ?>
+                    <div class="p-2 d-flex justify-content-center">Hello, Visitor</div>
+                <?php endif; ?>
+
                 <ul class="menu">
                     <li class="sidebar-item">
                         <a href="" onclick="self.close()" class="sidebar-link">
