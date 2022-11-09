@@ -79,4 +79,19 @@ class Package extends ResourceController
         ];
         return $this->respond($response);
     }
+
+    public function findByType()
+    {
+        $request = $this->request->getPost();
+        $type = $request['type'];
+        $contents = $this->packageModel->get_package_by_type($type)->getResult();
+        $response = [
+            'data' => $contents,
+            'status' => 200,
+            'message' => [
+                "Success find package by type"
+            ]
+        ];
+        return $this->respond($response);
+    }
 }

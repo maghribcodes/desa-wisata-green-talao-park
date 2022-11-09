@@ -11,7 +11,13 @@ class Event extends ResourcePresenter
 {
     protected $eventModel;
     protected $galleryEventModel;
-    // protected $request;
+
+    /**
+     * Instance of the main Request object.
+     *
+     * @var HTTP\IncomingRequest
+     */
+    protected $request;
 
     protected $helpers = ['auth', 'url', 'filesystem'];
 
@@ -102,7 +108,7 @@ class Event extends ResourcePresenter
             'type' => $request['type'],
             'price' => $request['price'],
             'description' => $request['description'],
-            'contact_person' => $request['contact_person']
+            'contact_person' => $request['contact_person'],
         ];
         foreach ($requestData as $key => $value) {
             if (empty($value)) {
@@ -110,6 +116,7 @@ class Event extends ResourcePresenter
             }
         }
 
+        $geom = $request['multipolygon'];
         $geojson = $request['geo-json'];
 
         if (isset($request['video'])) {
@@ -122,7 +129,7 @@ class Event extends ResourcePresenter
             rmdir($filepath);
             $requestData['video_url'] = $vidFile->getFilename();
         }
-        $addEV = $this->eventModel->add_new_event($requestData, $geojson);
+        $addEV = $this->eventModel->add_new_event($requestData, $geom);
 
         if (isset($request['gallery'])) {
             $folders = $request['gallery'];
@@ -165,5 +172,72 @@ class Event extends ResourcePresenter
             'data' => $event,
         ];
         return view('dashboard/event-form', $data);
+    }
+
+    /**
+     * Process the updating, full or partial, of a specific resource object.
+     * This should be a POST.
+     *
+     * @param mixed $id
+     *
+     * @return mixed
+     */
+    public function update($id = null)
+    {
+        $request = $this->request->getPost();
+        $requestData = [
+            'id' => $id,
+            'name' => $request['name'],
+            'type' => $request['type'],
+            'price' => $request['price'],
+            'description' => $request['description'],
+            'contact_person' => $request['contact_person']
+        ];
+        foreach ($requestData as $key => $value) {
+            if (empty($value)) {
+                unset($requestData[$key]);
+            }
+        }
+
+        $geom = $request['multipolygon'];
+        // $geojson = $request['geo-json'];
+
+        if (isset($request['video'])) {
+            $folder = $request['video'];
+            $filepath = WRITEPATH . 'uploads/' . $folder;
+            $filenames = get_filenames($filepath);
+            $vidFile = new File($filepath . '/' . $filenames[0]);
+            $vidFile->move(FCPATH . 'media/videos');
+            delete_files($filepath);
+            rmdir($filepath);
+            $requestData['video_url'] = $vidFile->getFilename();
+        } else {
+            $requestData['video_url'] = null;
+        }
+        $updateEV = $this->eventModel->update_event($id, $requestData);
+        $updateGeom = $this->eventModel->update_geom($id, $geom);
+
+        if (isset($request['gallery'])) {
+            $folders = $request['gallery'];
+            $gallery = array();
+            foreach ($folders as $folder) {
+                $filepath = WRITEPATH . 'uploads/' . $folder;
+                $filenames = get_filenames($filepath);
+                $fileImg = new File($filepath . '/' . $filenames[0]);
+                $fileImg->move(FCPATH . 'media/photos/event');
+                delete_files($filepath);
+                rmdir($filepath);
+                $gallery[] = $fileImg->getFilename();
+            }
+            $this->galleryEventModel->update_gallery($id, $gallery);
+        } else {
+            $this->galleryEventModel->delete_gallery($id);
+        }
+
+        if ($updateEV) {
+            return redirect()->to(base_url('dashboard/event') . '/' . $id);
+        } else {
+            return redirect()->back()->withInput();
+        }
     }
 }

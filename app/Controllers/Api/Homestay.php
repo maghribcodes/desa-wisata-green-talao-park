@@ -64,4 +64,19 @@ class Homestay extends ResourceController
         ];
         return $this->respond($response);
     }
+
+    public function findByRadius()
+    {
+        $request = $this->request->getPost();
+        $contents = $this->homestayModel->get_homestay_by_radius($request)->getResult();
+
+        $response = [
+            'data' => $contents,
+            'status' => 200,
+            'message' => [
+                "Success find homestay by radius"
+            ]
+        ];
+        return $this->respond($response);
+    }
 }

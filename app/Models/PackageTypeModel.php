@@ -27,6 +27,7 @@ class PackageTypeModel extends Model
     public function get_list_type() {
         $query = $this->db->table($this->table)
             ->select('id, type_name')
+            ->orderBy('type_name', 'ASC')
             ->get();
         return $query;
     }

@@ -59,4 +59,15 @@ class PackageModel extends Model
             ->get();
         return $query;
     }
+
+    public function get_package_by_type($type = null)
+    {
+        $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
+        $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.price,{$this->table}.contact_person,{$this->table}.description,{$this->table}.video_url";
+        $query = $this->db->table($this->table)
+            ->select("{$columns}, {$coords}")
+            ->like("{$this->table}.type_id", $type)
+            ->get();
+        return $query;
+    }
 }

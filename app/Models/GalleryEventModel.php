@@ -57,4 +57,22 @@ class GalleryEventModel extends Model
         }
         return $query;
     }
+
+    public function update_gallery($id = null, $data = null)
+    {
+        $queryDel = $this->delete_gallery($id);
+
+        foreach ($data as $key => $value) {
+            if (empty($value)) {
+                unset($data[$key]);
+            }
+        }
+        $queryIns = $this->add_new_gallery($id, $data);
+        return $queryDel && $queryIns;
+    }
+
+    public function delete_gallery($id = null)
+    {
+        return $this->db->table($this->table)->delete(['event_id' => $id]);
+    }
 }

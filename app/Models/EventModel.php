@@ -32,11 +32,8 @@ class EventModel extends Model
         $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
         $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.type,{$this->table}.description,
                         {$this->table}.price,{$this->table}.contact_person,{$this->table}.video_url";
-        // $gtpGeom = "gtp.id = 'GTP01' AND ST_Contains(gtp.geom, {$this->table}.geom)";
         $query = $this->db->table($this->table)
             ->select("{$columns}, {$coords}")
-            // ->from('gtp')
-            // ->where($gtpGeom)
             ->get();
         return $query;
     }
@@ -47,12 +44,12 @@ class EventModel extends Model
         $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.type,{$this->table}.description,
                         {$this->table}.price,{$this->table}.contact_person,{$this->table}.video_url";
         $geoJson = "ST_AsGeoJSON({$this->table}.geom) AS geoJson";
-        $gtpGeom = "gtp.id = 'GTP01' AND ST_Contains(gtp.geom, {$this->table}.geom)";
+        // $gtpGeom = "gtp.id = 'GTP01' AND ST_Contains(gtp.geom, {$this->table}.geom)";
         $query = $this->db->table($this->table)
             ->select("{$columns}, {$coords}, {$geoJson}")
-            ->from('gtp')
+            // ->from('gtp')
             ->where('event.id', $id)
-            ->where($gtpGeom)
+            // ->where($gtpGeom)
             ->get();
         return $query;
     }
@@ -65,16 +62,40 @@ class EventModel extends Model
         return $id;
     }
 
-    public function add_new_event($event = null, $geojson = null)
+    public function add_new_event($event = null, $geom = null)
     {
         // $event['created_at'] = Time::now();
         // $event['updated_at'] = Time::now();
         $insert = $this->db->table($this->table)
             ->insert($event);
         $update = $this->db->table($this->table)
-            ->set('geom', "ST_GeomFromGeoJSON('{$geojson}')", false)
+            // ->set('geom', "ST_GeomFromGeoJSON('{$geojson}')", false)
+            ->set('geom', "ST_GeomFromText('{$geom}')", false)
             ->where('id', $event['id'])
             ->update();
         return $insert && $update;
+    }
+
+    public function update_event($id = null, $event = null)
+    {
+        foreach ($event as $key => $value) {
+            if (empty($value)) {
+                unset($event[$key]);
+            }
+        }
+        // $event['updated_at'] = Time::now();
+        $query = $this->db->table($this->table)
+            ->where('id', $id)
+            ->update($event);
+        return $query;
+    }
+
+    public function update_geom($id = null, $geom = null)
+    {
+        $query = $this->db->table($this->table)
+            ->set('geom', "ST_GeomFromText('{$geom}')", false)
+            ->where('id', $id)
+            ->update();
+        return $query;
     }
 }

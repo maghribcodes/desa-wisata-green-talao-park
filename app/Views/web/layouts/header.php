@@ -8,7 +8,7 @@
     <div class="page-title">
         <div class="row">
             <div class="col-12 col-md-6 order-md-1 order-last">
-                <h4>GTP Ulakan</h4>
+                <h4>Green Talao Park</h4>
                 <p class="text-subtitle text-muted">Tourism Village</p>
             </div>
 

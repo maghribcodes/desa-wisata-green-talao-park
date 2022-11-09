@@ -37,6 +37,7 @@ $edit = in_array('edit', $uri);
                             <div class="form-group mb-4">
                                 <label for="geo-json" class="mb-2">GeoJSON</label>
                                 <input type="text" id="geo-json" class="form-control" name="geo-json" placeholder="GeoJSON" readonly="readonly" required value='<?= ($edit) ? $data['geoJson'] : ''; ?>'>
+                                <input type="hidden" class="form-control" id="multipolygon" name="multipolygon" placeholder="">
                             </div>
                             <div class="form-group mb-4">
                                 <label for="name" class="mb-2">Event Name</label>
@@ -132,7 +133,7 @@ $edit = in_array('edit', $uri);
 <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
 <script src="<?= base_url('assets/js/extensions/form-element-select.js'); ?>"></script>
 
-<script>
+<!-- <script>
     $('#datepicker_start').datepicker({
         format: 'yyyy-mm-dd',
         startDate: '-3d'
@@ -141,7 +142,7 @@ $edit = in_array('edit', $uri);
         format: 'yyyy-mm-dd',
         startDate: '-3d'
     });
-</script>
+</script> -->
 <script>
     // const myModal = document.getElementById('videoModal');
     // const videoSrc = document.getElementById('video-play').getAttribute('data-src');
@@ -186,7 +187,7 @@ $edit = in_array('edit', $uri);
 
     <?php if ($edit && count($data['gallery']) > 0) : ?>
         pond.addFiles(
-            <?php foreach ($data['gallery'] as $gallery) : ?> `<?= base_url('media/photos/event/' . $gallery); ?>`
+            <?php foreach ($data['gallery'] as $g) : ?> `<?= base_url('media/photos/event/' . $g); ?>`,
             <?php endforeach; ?>
         );
     <?php endif; ?>

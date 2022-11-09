@@ -124,15 +124,5 @@
     myModal.addEventListener('hide.bs.modal', () => {
         document.getElementById('video').setAttribute('src', '');
     });
-    $(document).ready(function() {
-        $('#table-manage').DataTable({
-            order: [],
-            columnDefs: [{
-                targets: ['_all'],
-                className: 'dt-head-center'
-            }],
-            lengthMenu: [5, 10, 20, 50, 100]
-        });
-    });
 </script>
 <?= $this->endSection() ?>

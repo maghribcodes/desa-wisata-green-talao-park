@@ -50,7 +50,7 @@
                                             </td>
                                             <td>
                                                 <a data-bs-toggle="tooltip" data-bs-placement="bottom" title="Show All" class="btn icon btn-primary mx-1" onclick="showMap('cp');">
-                                                    <span class="material-symbols-outlined">search</span>
+                                                    <i class="fa-solid fa-eye"></i>
                                                 </a>
                                             </td>
                                         </tr>
@@ -60,7 +60,7 @@
                                             </td>
                                             <td>
                                                 <a data-bs-toggle="tooltip" data-bs-placement="bottom" title="Show All" class="btn icon btn-primary mx-1" onclick="showMap('ho');">
-                                                    <span class="material-symbols-outlined">search</span>
+                                                    <i class="fa-solid fa-eye"></i>
                                                 </a>
                                             </td>
                                         </tr>
@@ -70,7 +70,7 @@
                                             </td>
                                             <td>
                                                 <a data-bs-toggle="tooltip" data-bs-placement="bottom" title="Show All" class="btn icon btn-primary mx-1" onclick="showMap('sp');">
-                                                    <span class="material-symbols-outlined">search</span>
+                                                    <i class="fa-solid fa-eye"></i>
                                                 </a>
                                             </td>
                                         </tr>
@@ -80,18 +80,24 @@
                                             </td>
                                             <td>
                                                 <a data-bs-toggle="tooltip" data-bs-placement="bottom" title="Show All" class="btn icon btn-primary mx-1" onclick="showMap('wp');">
-                                                    <span class="material-symbols-outlined">search</span>
+                                                    <i class="fa-solid fa-eye"></i>
                                                 </a>
                                             </td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
+                            <div class="mt-3">
+                                <a title="Around You" class="btn icon btn-outline-primary mx-1" onclick="openExplore()">
+                                    <i class="fa-solid fa-compass me-3"></i>Search object around you?
+                                </a>
+                            </div>
                         </div>
+
                     </div>
                 </div>
                 <!-- Nearby section -->
-                <?= $this->include('web/layouts/nearby'); ?>
+                <?= $this->include('web/layouts/explore'); ?>
             </div>
         </div>
         <!-- Direction section -->
@@ -103,7 +109,6 @@
 <?= $this->section('javascript') ?>
 <script>
     $('#direction-row').hide();
-    $('#check-nearby-col').hide();
-    $('#result-nearby-col').hide();
+    $('#check-explore-col').hide();
 </script>
 <?= $this->endSection() ?>

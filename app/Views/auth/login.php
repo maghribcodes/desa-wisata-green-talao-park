@@ -26,7 +26,7 @@
 
                         <?php if ($config->validFields === ['email']) : ?>
                             <div class="form-group position-relative has-icon-left mb-3">
-                                <input type="email" class="form-control <?php if (session('errors.login')) : ?>is-invalid<?php endif ?>" placeholder="<?= lang('Auth.email') ?>" name="login" value="<?= old('login') ?>" />
+                                <input type="email" class="form-control <?php if (session('errors.login')) : ?>is-invalid<?php endif ?>" placeholder="<?= lang('Auth.email') ?>" name="login" value="<?= old('login') ?>" autocomplete="off" />
                                 <div class="form-control-icon">
                                     <i class="bi bi-person"></i>
                                 </div>
@@ -36,7 +36,7 @@
                             </div>
                         <?php else : ?>
                             <div class="form-group position-relative has-icon-left mb-3">
-                                <input type="text" class="form-control <?php if (session('errors.login')) : ?>is-invalid<?php endif ?>" placeholder="<?= lang('Auth.emailOrUsername') ?>" name="login" value="<?= old('login') ?>" />
+                                <input type="text" class="form-control <?php if (session('errors.login')) : ?>is-invalid<?php endif ?>" placeholder="<?= lang('Auth.emailOrUsername') ?>" name="login" value="<?= old('login') ?>" autocomplete="off" />
                                 <div class="form-control-icon">
                                     <i class="bi bi-person"></i>
                                 </div>

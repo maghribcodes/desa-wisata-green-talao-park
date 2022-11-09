@@ -76,7 +76,7 @@ $uri3 = $uri[3] ?? '';
                                         <a data-bs-toggle="collapse" href="#searchNamePA" role="button" aria-expanded="false" aria-controls="searchNamePA"><i class="fa-solid fa-arrow-down-a-z me-3"></i>By Name</a>
                                         <div class="collapse mb-3" id="searchNamePA">
                                             <div class="d-grid gap-2">
-                                                <input type="text" name="namePA" id="namePA" class="form-control" placeholder="Name" aria-label="Recipient's username" aria-describedby="button-addon2">
+                                                <input type="text" name="namePA" id="namePA" class="form-control" placeholder="Name" aria-label="Recipient's username" aria-describedby="button-addon2" autocomplete="off">
                                                 <button class="btn btn-outline-primary" type="submit" id="button-addon2" onclick="findByName('PA')">
                                                     <span class="material-icons" style="font-size: 1.5rem; vertical-align: bottom">search</span>
                                                 </button>
@@ -84,7 +84,7 @@ $uri3 = $uri[3] ?? '';
                                         </div>
                                     </li>
                                     <!-- Package by Type -->
-                                    <!-- <li class="submenu-item submenu-marker" id="pa-by-type">
+                                    <li class="submenu-item submenu-marker" id="pa-by-type">
                                         <a data-bs-toggle="collapse" href="#searchTypePA" role="button" aria-expanded="false" aria-controls="searchTypePA"><i class="fa-solid fa-check-to-slot me-3"></i>By Type</a>
                                         <div class="collapse mb-3" id="searchTypePA">
                                             <div class="d-grid">
@@ -100,7 +100,7 @@ $uri3 = $uri[3] ?? '';
                                                 </button>
                                             </div>
                                         </div>
-                                    </li> -->
+                                    </li>
                                 </ul>
                             </li>
                         </ul>

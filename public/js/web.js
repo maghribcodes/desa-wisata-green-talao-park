@@ -711,62 +711,6 @@ function updateRadius(postfix) {
     document.getElementById('radiusValue' + postfix).innerHTML = (document.getElementById('inputRadius' + postfix).value * 100) + " m";
 }
 
-// Render search by radius
-// function radiusSearch({postfix= null, } = {}) {
-
-//     if (userLat == 0 && userLng == 0) {
-//         document.getElementById('radiusValue' + postfix).innerHTML = "0 m";
-//         document.getElementById('inputRadius' + postfix).value = 0;
-//         return Swal.fire('Determine your position first!');
-//     }
-
-//     clearRadius();
-//     clearRoute();
-//     clearMarker();
-//     destinationMarker.setMap(null);
-//     google.maps.event.clearListeners(map, 'click');
-//     closeNearby();
-
-//     let pos = new google.maps.LatLng(currentLat, currentLng);
-//     let radiusValue = parseFloat(document.getElementById('inputRadius' + postfix).value) * 100;
-//     map.panTo(pos);
-
-//     // find object in radius
-//     if (postfix === 'AT') {
-//         $.ajax({
-//             url: baseUrl + '/api/attraction/findByRadius',
-//             type: 'POST',
-//             data: {
-//                 lat: currentLat,
-//                 long: currentLng,
-//                 radius: radiusValue
-//             },
-//             dataType: 'json',
-//             success: function (response) {
-//                 displayFoundObject(response);
-//                 drawRadius(pos, radiusValue);
-//             }
-//         });
-//     } 
-    // else if (postfix === 'EV') {
-    //     $.ajax({
-    //         url: baseUrl + '/api/event/findByRadius',
-    //         type: 'POST',
-    //         data: {
-    //             lat: currentLat,
-    //             long: currentLng,
-    //             radius: radiusValue
-    //         },
-    //         dataType: 'json',
-    //         success: function (response) {
-    //             displayFoundObject(response);
-    //             drawRadius(pos, radiusValue);
-    //         }
-    //     });
-    // }
-
-//}
-
 // pan to selected object
 function focusObject(id) {
     google.maps.event.trigger(markerArray[id], 'click');
@@ -851,6 +795,184 @@ function openNearby(id, lat, lng) {
     map.panTo(pos);
 
     document.getElementById('inputRadiusNearby').setAttribute('onchange', 'updateRadius("Nearby"); checkNearby("'+id+'")');
+}
+
+// open nearby search section
+function openExplore() {
+    $('#list-object-col').hide();
+    $('#check-explore-col').show();
+
+    document.getElementById('inputRadiusNearby').setAttribute('onchange', 'updateRadius("Nearby"); checkExplore()');
+}
+
+function closeExplore() {
+    $('#check-explore-col').hide();
+    $('#list-object-col').show();
+}
+
+function checkExplore() {
+    if (userLat == 0 && userLng == 0) {
+        document.getElementById('radiusValueNearby').innerHTML = "0 m";
+        document.getElementById('inputRadiusNearby').value = 0;
+        return Swal.fire('Determine your position first!');
+    }
+
+    clearRadius();
+    clearRoute();
+    clearMarker();
+    destinationMarker.setMap(null);
+    google.maps.event.clearListeners(map, 'click');
+
+    let pos = new google.maps.LatLng(currentLat, currentLng);
+    let radiusValue = parseFloat(document.getElementById('inputRadiusNearby').value) * 100;
+    map.panTo(pos);
+
+    const checkCP = document.getElementById('check-cp').checked;
+    const checkHO = document.getElementById('check-ho').checked;
+    const checkSP = document.getElementById('check-sp').checked;
+    const checkWP = document.getElementById('check-wp').checked;
+
+    if (!checkCP && !checkHO && !checkSP && !checkWP) {
+        document.getElementById('radiusValueNearby').innerHTML = "0 m";
+        document.getElementById('inputRadiusNearby').value = 0;
+        return Swal.fire('Please choose one object');
+    }
+
+    if (checkCP) {
+        findExplore('cp', radiusValue);
+    }
+    if (checkHO) {
+        findExplore('ho', radiusValue);
+    }
+    if (checkSP) {
+        findExplore('sp', radiusValue);
+    }
+    if (checkWP) {
+        findExplore('wp', radiusValue);
+    }
+    drawRadius(new google.maps.LatLng(currentLat, currentLng), radiusValue);
+}
+
+// Fetch object nearby by category
+function findExplore(category, radius) {
+    // let pos = new google.maps.LatLng(currentLat, currentLng);
+    if (category === 'cp') {
+        $.ajax({
+            url: baseUrl + '/api/culinaryPlace/findByRadius',
+            type: 'POST',
+            data: {
+                lat: currentLat,
+                long: currentLng,
+                radius: radius
+            },
+            dataType: 'json',
+            success: function (response) {
+                displayExploreResult(response);
+            }
+        });
+    } else if (category === 'ho') {
+        $.ajax({
+            url: baseUrl + '/api/homestay/findByRadius',
+            type: 'POST',
+            data: {
+                lat: currentLat,
+                long: currentLng,
+                radius: radius
+            },
+            dataType: 'json',
+            success: function (response) {
+                displayExploreResult(response);
+            }
+        });
+    } else if (category === 'sp') {
+        $.ajax({
+            url: baseUrl + '/api/souvenirPlace/findByRadius',
+            type: 'POST',
+            data: {
+                lat: currentLat,
+                long: currentLng,
+                radius: radius
+            },
+            dataType: 'json',
+            success: function (response) {
+                displayExploreResult(response);
+            }
+        });
+    } else if (category === 'wp') {
+        $.ajax({
+            url: baseUrl + '/api/worshipPlace/findByRadius',
+            type: 'POST',
+            data: {
+                lat: currentLat,
+                long: currentLng,
+                radius: radius
+            },
+            dataType: 'json',
+            success: function (response) {
+                displayExploreResult(response);
+            }
+        });
+    }
+}
+
+function displayExploreResult(response) {
+    let data = response.data;
+
+    for (i in data) {
+        let item = data[i];
+        objectMarkerExplore(item.id, item.lat, item.lng, item.status);
+    }
+}
+
+function objectMarkerExplore(id, lat, lng, status, anim = true) {
+
+    google.maps.event.clearListeners(map, 'click');
+    let pos = new google.maps.LatLng(lat, lng);
+    let marker = new google.maps.Marker();
+
+    let icon;
+    if (id.substring(0,2) === "HO") {
+        if (status === "1") {
+            icon = baseUrl + '/media/icon/hogtp.png';
+        } else {
+            icon = baseUrl + '/media/icon/homestay.png';
+        }
+    } else if (id.substring(0,2) === "CP") {
+        if (status === "1") {
+            icon = baseUrl + '/media/icon/cpgtp.png';
+        } else {
+            icon = baseUrl + '/media/icon/culinary.png';
+        }
+    } else if (id.substring(0,2) === "SP") {
+        if (status === "1") {
+            icon = baseUrl + '/media/icon/souvenir.png';
+        } else {
+            icon = baseUrl + '/media/icon/souvenir.png';
+        }
+    } else if (id.substring(0,2) === "WP") {
+        if (status === "1") {
+            icon = baseUrl + '/media/icon/wpgtp.png';
+        } else {
+            icon = baseUrl + '/media/icon/worship.png';
+        }
+    }
+
+    markerOption = {
+        position: pos,
+        icon: icon,
+        animation: google.maps.Animation.DROP,
+        map: map,
+    }
+    marker.setOptions(markerOption);
+    if (!anim) {
+        marker.setAnimation(null);
+    }
+    marker.addListener('click', () => {
+        infoWindow.close();
+        objectInfoWindow(id);
+        infoWindow.open(map, marker);
+    });
+    markerArray[id] = marker;
 }
 
 // Search Result Object Around
@@ -1243,16 +1365,26 @@ function displayNearbyResult(category, response) {
 
 // Show modal for object
 function infoModal(id) {
-    let title, content;
+    let title;
+    let content;
+    // let g;
+    // let content = "";
+
     if (id.substring(0,2) === "FC") {
         $.ajax({
             url: baseUrl + '/api/facility/' + id,
             dataType: 'json',
             success: function (response) {
                 let item = response.data;
-
+                // g = item.gallery;
                 title = '<h3>'+item.name+'</h3>';
+                // g.forEach( a => {
+                //     content += '<div><img src="/media/photos/facility/'+a+'" alt="'+ item.name +'" class="w-50"></div>'
+                // });
+
                 content =
+                    '<div class="text-start">'+
+                    '</div>'+
                     '<div>' +
                     '<img src="/media/photos/facility/'+item.gallery[0]+'" alt="'+ item.name +'" class="w-50">' +
                     '</div>';
@@ -1399,23 +1531,50 @@ function findByName(category) {
 }
 
 // Get list of package type
-// function getType() {
-//     let type;
-//     $('#typePASelect').empty()
-//     $.ajax({
-//         url: baseUrl + '/api/package/type',
-//         dataType: 'json',
-//         success: function (response) {
-//             let data = response.data;
-//             for (i in data) {
-//                 let item = data[i];
-//                 type =
-//                     '<option value="'+ item.id +'">'+ item.type_name +'</option>';
-//                 $('#typePASelect').append(type);
-//             }
-//         }
-//     });
-// }
+function getType() {
+    let type;
+    $('#typePASelect').empty()
+    $.ajax({
+        url: baseUrl + '/api/package/type',
+        dataType: 'json',
+        success: function (response) {
+            let data = response.data;
+            for (i in data) {
+                let item = data[i];
+                type =
+                    '<option value="'+ item.id +'">'+ item.type_name +'</option>';
+                $('#typePASelect').append(type);
+            }
+        }
+    });
+}
+
+// Find object by Type
+function findByType(object) {
+    clearRadius();
+    clearRoute();
+    clearMarker();
+    clearUser();
+    destinationMarker.setMap(null);
+    google.maps.event.clearListeners(map, 'click');
+    closeNearby();
+
+    if (object === 'PA') {
+        let type = document.getElementById('typePASelect').value;
+        $.ajax({
+            url: baseUrl + '/api/package/findByType',
+            type: 'POST',
+            data: {
+                type: type,
+            },
+            dataType: 'json',
+            success: function (response) {
+                displayFoundObject(response);
+                boundToObject();
+            }
+        });
+    }
+}
 
 // Show All in Explore Ulakan
 function showMap(id = null) {
@@ -1445,7 +1604,7 @@ function showMap(id = null) {
                 let item = data[i];
                 // currentUrl = currentUrl + item.id;
                 // currentUrl = currentUrl;
-                objectMarker(item.id, item.lat, item.lng);
+                objectMarkerExplore(item.id, item.lat, item.lng, item.status);
             }
             boundToObject();
         }
@@ -1575,17 +1734,24 @@ function initDrawingManager(edit = false) {
 
 // Get geoJSON of selected shape on map
 function saveSelection(shape) {
-
+    let str_input ='MULTIPOLYGON(((';
+    let coord = [];
     let centroid = [0.0, 0.0];
     const paths = shape.getPath().getArray();
 
     for (let i = 0; i < paths.length; i++) {
         centroid[0] += paths[i].lat();
         centroid[1] += paths[i].lng();
+        coord[i] = paths[i].lng() + ' ' + paths[i].lat();
+        str_input += paths[i].lng() + ' ' + paths[i].lat() + ',';
     }
+
+    str_input = str_input + '' + coord[0] + ')))';
     const totalPaths = paths.length;
     centroid[0] = centroid[0] / totalPaths;
     centroid[1] = centroid[1] / totalPaths;
+
+    // console.log(str_input)
 
     let pos = new google.maps.LatLng(centroid[0], centroid[1]);
     map.panTo(pos);
@@ -1598,10 +1764,11 @@ function saveSelection(shape) {
         map: map,
     }
     marker.setOptions(markerOption);
-    markerArray['newRG'] = marker;
+    markerArray['new'] = marker;
 
     document.getElementById('latitude').value = centroid[0].toFixed(8);
     document.getElementById('longitude').value = centroid[1].toFixed(8);
+    document.getElementById('multipolygon').value = str_input;
 
     const dataLayer = new google.maps.Data();
     dataLayer.add(new google.maps.Data.Feature({
@@ -1617,13 +1784,15 @@ function drawGeom() {
     const geoJSON = $('#geo-json').val();
     if (geoJSON !== '') {
         const geoObj = JSON.parse(geoJSON);
-        const coords = geoObj.coordinates[0];
+        const coords = geoObj.coordinates[0][0];
+        // console.log(coords)
         let polygonCoords = []
         for (i in coords) {
             polygonCoords.push(
                 {lat: coords[i][1], lng: coords[i][0]}
             );
         }
+        // console.log(polygonCoords)
         const polygon = new google.maps.Polygon({
             paths: polygonCoords,
             fillColor: 'blue',

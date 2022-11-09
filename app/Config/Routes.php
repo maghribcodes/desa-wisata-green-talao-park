@@ -99,6 +99,8 @@ $routes->group('dashboard', ['namespace' => 'App\Controllers\Web', 'filter' => '
 $routes->group('upload', ['namespace' => 'App\Controllers\Web'], function ($routes) {
     $routes->post('photo', 'Upload::photo');
     $routes->post('video', 'Upload::video');
+    $routes->delete('photo', 'Upload::remove');
+    $routes->delete('video', 'Upload::remove');
 });
 
 
@@ -107,6 +109,8 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], function ($routes)
     $routes->resource('gtp');
 
     $routes->post('village', 'Village::getData');
+
+    $routes->resource('connection');
 
     $routes->resource('tracking');
 
@@ -118,14 +122,19 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], function ($routes)
 
     $routes->resource('event');
 
+    $routes->get('package/type', 'Package::type');
     $routes->resource('package');
     $routes->post('package/findByName', 'Package::findByName');
-    $routes->get('package/type', 'Package::type');
+    $routes->post('package/findByType', 'Package::findByType');
 
     $routes->resource('homestay');
+    $routes->post('homestay/findByRadius', 'Homestay::findByRadius');
     $routes->resource('culinaryPlace');
+    $routes->post('culinaryPlace/findByRadius', 'CulinaryPlace::findByRadius');
     $routes->resource('souvenirPlace');
+    $routes->post('souvenirPlace/findByRadius', 'SouvenirPlace::findByRadius');
     $routes->resource('worshipPlace');
+    $routes->post('worshipPlace/findByRadius', 'WorshipPlace::findByRadius');
 });
 
 /*

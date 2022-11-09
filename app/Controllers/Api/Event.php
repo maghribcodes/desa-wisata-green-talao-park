@@ -3,6 +3,7 @@
 namespace App\Controllers\Api;
 
 use App\Models\EventModel;
+// use App\Models\GalleryEventModel;
 use CodeIgniter\API\ResponseTrait;
 use CodeIgniter\RESTful\ResourceController;
 

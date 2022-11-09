@@ -53,4 +53,19 @@ class WorshipPlace extends ResourceController
         ];
         return $this->respond($response);
     }
+
+    public function findByRadius()
+    {
+        $request = $this->request->getPost();
+        $contents = $this->worshipPlaceModel->get_wp_by_radius($request)->getResult();
+
+        $response = [
+            'data' => $contents,
+            'status' => 200,
+            'message' => [
+                "Success find worship place by radius"
+            ]
+        ];
+        return $this->respond($response);
+    }
 }
