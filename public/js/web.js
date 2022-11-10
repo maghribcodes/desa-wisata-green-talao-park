@@ -1811,12 +1811,12 @@ function deleteObject(id = null, name = null, user = false) {
     }
 
     let content, apiUri;
-    if (id.substring(0,2) === 'RG') {
-        content = 'Rumah Gadang';
-        apiUri = 'rumahGadang/';
-    } else if (id.substring(0,2) === 'EV') {
+    if (id.substring(0,2) === 'EV') {
         content = 'Event';
-        apiUri = 'event/'
+        apiUri = 'event/';
+    } else if (id.substring(0,2) === 'PA') {
+        content = 'Package';
+        apiUri = 'package/'
     } else if (id.substring(0,2) === 'FC') {
         content = 'Facility';
         apiUri = 'facility/'
