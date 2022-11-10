@@ -2,7 +2,7 @@
 <div class="col-12" id="check-track-col">
     <div class="card">
         <div class="card-header">
-            <h5 class="card-title text-center">Facility Around</h5>
+            <h5 class="card-title text-center">Facility Along the Track</h5>
         </div>
         <div class="card-body">
             <div class="form-check">
@@ -67,7 +67,7 @@
             </div>
             <div class="mt-3">
                 <a title="Search" class="btn icon btn-outline-primary mx-1" id="inputTrackAlong" onclick="checkTrack()">
-                    <i class="fa-brands fa-searchengin"></i> Search
+                    <i class="fa-solid fa-magnifying-glass-location"></i> Search
                 </a>
                 <a title="Close Nearby" class="btn icon btn-outline-primary mx-1" onclick="closeNearby()">
                     <i class="fa-solid fa-circle-xmark"></i> Close

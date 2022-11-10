@@ -314,10 +314,10 @@ function digitTracking() {
             const data = response.data;
             digitasi.addGeoJson(data);
             digitasi.setStyle({
-                fillColor:'#0001ff',
-                strokeWeight:2.5,
-                strokeColor:'#a5fc9f',
-                fillOpacity: 0.1,
+                fillColor:'#FF0000',
+                strokeWeight:0.8,
+                strokeColor:'#FF0000',
+                fillOpacity: 0.35,
                 clickable: false
             });
             digitasi.setMap(map);
@@ -358,7 +358,9 @@ function objectMarker(id, lat, lng, anim = true) {
     let marker = new google.maps.Marker();
 
     let icon;
-    if (id.substring(0,1) === "A") {
+    if (id.substring(0,3) === "GTP") {
+        icon = baseUrl + '/media/icon/gtp.png';
+    } else if (id.substring(0,1) === "A") {
         if(id === "A0001") {
             icon = baseUrl + '/media/icon/tracking.png';
         } else {
@@ -401,7 +403,24 @@ function objectInfoWindow(id){
     let content = '';
     let contentButton = '';
 
-    if (id.substring(0,1) === "A") {
+    if (id.substring(0,3) === "GTP") {
+        $.ajax({
+            url: baseUrl + '/api/gtp/' + id,
+            dataType: 'json',
+            success: function (response) {
+                let data = response.data;
+                let name = data.name;
+
+                content =
+                    '<div class="text-center">' +
+                    '<p class="fw-bold fs-6">'+ name +'</p>' +
+                    '<p><i class="fa-solid fa-spa"></i> Tourism Village</p>' +
+                    '</div>';
+
+                infoWindow.setContent(content);
+            }
+        });
+    } else if (id.substring(0,1) === "A") {
         $.ajax({
             url: baseUrl + '/api/attraction/' + id,
             dataType: 'json',
@@ -424,7 +443,7 @@ function objectInfoWindow(id){
                 if(aid == "A0001") {
                     contentButton =
                     '<br><div class="text-center">' +
-                    '<a title="Nearby" class="btn icon btn-outline-primary mx-1" id="nearbyInfoWindow" onclick="openTrack(`'+ aid +'`,'+ lat +','+ lng +')"><i class="fa-solid fa-compass"></i></a>' +
+                    '<a title="Nearby" class="btn icon btn-outline-primary mx-1" id="nearbyInfoWindow" onclick="openTrack(`'+ aid +'`,'+ lat +','+ lng +')"><i class="fa-solid fa-map-location-dot"></i></a>' +
                     '</div>'
                 } else {
                     contentButton =
@@ -1025,7 +1044,7 @@ function checkNearby(id) {
         && !checkSP && !checkTH && !checkVT && !checkWP) {
         document.getElementById('radiusValueNearby').innerHTML = "0 m";
         document.getElementById('inputRadiusNearby').value = 0;
-        return Swal.fire('Please choose one object');
+        return Swal.fire('Please choose one facility!');
     }
 
     if (checkCP) {
@@ -1124,7 +1143,7 @@ function checkTrack(id) {
 
     if (!checkCP && !checkGA && !checkOF && !checkPA && !checkPB && !checkSA
         && !checkSP && !checkTH && !checkVT && !checkWP) {
-        return Swal.fire('Please choose one object');
+        return Swal.fire('Please choose one facility!');
     }
 
     if (checkCP) {
@@ -1814,7 +1833,7 @@ function deleteObject(id = null, name = null, user = false) {
     if (id.substring(0,2) === 'EV') {
         content = 'Event';
         apiUri = 'event/';
-    } else if (id.substring(0,2) === 'PA') {
+    } else if (id.substring(0,1) === 'P') {
         content = 'Package';
         apiUri = 'package/'
     } else if (id.substring(0,2) === 'FC') {

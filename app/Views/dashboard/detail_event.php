@@ -1,4 +1,4 @@
-<?= $this->extend('web/layouts/main'); ?>
+<?= $this->extend('dashboard/layouts/main'); ?>
 
 <?= $this->section('content') ?>
 

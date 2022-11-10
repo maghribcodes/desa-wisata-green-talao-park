@@ -37,7 +37,7 @@
                             </script>
                             <?php foreach ($data as $item) : endforeach; ?>
                             <script>
-                                // objectMarker("<?= esc($item['id']); ?>", <?= esc($item['lat']); ?>, <?= esc($item['lng']); ?>);
+                                objectMarker("<?= esc($item['id']); ?>", <?= esc($item['lat']); ?>, <?= esc($item['lng']); ?>);
                             </script>
                             <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
                                 <ol class="carousel-indicators">

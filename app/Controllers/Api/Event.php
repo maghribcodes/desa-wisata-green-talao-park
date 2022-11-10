@@ -3,7 +3,7 @@
 namespace App\Controllers\Api;
 
 use App\Models\EventModel;
-// use App\Models\GalleryEventModel;
+use App\Models\GalleryEventModel;
 use CodeIgniter\API\ResponseTrait;
 use CodeIgniter\RESTful\ResourceController;
 
@@ -12,10 +12,12 @@ class Event extends ResourceController
     use ResponseTrait;
 
     protected $eventModel;
+    protected $galleryEventModel;
 
     public function __construct()
     {
         $this->eventModel = new EventModel();
+        $this->galleryEventModel = new GalleryEventModel();
     }
 
     /**
@@ -48,5 +50,33 @@ class Event extends ResourceController
             ]
         ];
         return $this->respond($response);
+    }
+
+    /**
+     * Delete the designated resource object from the model
+     *
+     * @return mixed
+     */
+    public function delete($id = null)
+    {
+        $deleteGEV = $this->galleryEventModel->delete(['event_id' => $id]);
+        $deleteEV = $this->eventModel->delete(['id' => $id]);
+        if ($deleteEV) {
+            $response = [
+                'status' => 200,
+                'message' => [
+                    "Success delete event"
+                ]
+            ];
+            return $this->respondDeleted($response);
+            // } else {
+            //     $response = [
+            //         'status' => 404,
+            //         'message' => [
+            //             "Event not found"
+            //         ]
+            //     ];
+            //     return $this->failNotFound($response);
+        }
     }
 }

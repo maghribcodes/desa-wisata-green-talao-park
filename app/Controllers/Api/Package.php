@@ -4,6 +4,7 @@ namespace App\Controllers\Api;
 
 use App\Models\PackageModel;
 use App\Models\PackageTypeModel;
+use App\Models\GalleryPackageModel;
 use CodeIgniter\API\ResponseTrait;
 use CodeIgniter\RESTful\ResourceController;
 
@@ -13,11 +14,13 @@ class Package extends ResourceController
 
     protected $packageModel;
     protected $packageTypeModel;
+    protected $galleryPackageModel;
 
     public function __construct()
     {
         $this->packageModel = new PackageModel();
         $this->packageTypeModel = new PackageTypeModel();
+        $this->galleryPackageModel = new GalleryPackageModel();
     }
 
     /**
@@ -93,5 +96,28 @@ class Package extends ResourceController
             ]
         ];
         return $this->respond($response);
+    }
+
+    public function delete($id = null)
+    {
+        $deleteGP = $this->galleryPackageModel->delete(['package_id' => $id]);
+        $deletePA = $this->packageModel->delete(['id' => $id]);
+        if ($deletePA) {
+            $response = [
+                'status' => 200,
+                'message' => [
+                    "Success delete package"
+                ]
+            ];
+            return $this->respondDeleted($response);
+            // } else {
+            //     $response = [
+            //         'status' => 404,
+            //         'message' => [
+            //             "Package not found"
+            //         ]
+            //     ];
+            //     return $this->failNotFound($response);
+        }
     }
 }

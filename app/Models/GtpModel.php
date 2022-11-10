@@ -54,4 +54,15 @@ class GtpModel extends Model
             ->get();
         return $query;
     }
+
+    public function get_gtp_marker($id = null)
+    {
+        $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
+        $columns = "{$this->table}.id,{$this->table}.name";
+        $query = $this->db->table($this->table)
+            ->select("{$columns}, {$coords}")
+            ->where('id', $id)
+            ->get();
+        return $query;
+    }
 }

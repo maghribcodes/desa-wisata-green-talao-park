@@ -48,4 +48,18 @@ class Gtp extends ResourceController
 
         return $this->respond($response);
     }
+
+    public function show($id = null)
+    {
+        $gtp = $this->gtpModel->get_gtp_marker($id)->getRowArray();
+
+        $response = [
+            'data' => $gtp,
+            'status' => 200,
+            'message' => [
+                "Success display detail information of GTP"
+            ]
+        ];
+        return $this->respond($response);
+    }
 }
