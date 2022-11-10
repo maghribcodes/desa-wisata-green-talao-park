@@ -29,7 +29,7 @@ $edit = in_array('edit', $uri);
         <div class="col-md-6 col-12">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title text-center"><?= $title; ?></h4>
+                    <h4 class="card-title text-center">dsadasndskadn<?= $title; ?></h4>
                 </div>
                 <div class="card-body">
                     <form class="form form-vertical" action="<?= ($edit) ? base_url('dashboard/event/update') . '/' . $data['id'] : base_url('dashboard/event'); ?>" method="post" onsubmit="checkRequired(event)" enctype="multipart/form-data">
