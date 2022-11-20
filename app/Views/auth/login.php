@@ -71,13 +71,13 @@
 
                     </form>
 
-                    <?php if ($config->allowRegistration) : ?>
+<!--                     <?php //if ($config->allowRegistration) : ?>
                         <div class="text-center mt-3 text-lg">
                             <p class="text-gray-600">
-                                <a href="<?= url_to('register') ?>" class="font-bold"><?= lang('Auth.needAnAccount') ?></a> <br>
+                                <a href="<?//= url_to('register') ?>" class="font-bold"><?//= lang('Auth.needAnAccount') ?></a> <br>
                             </p>
                         </div>
-                    <?php endif; ?>
+                    <?php //endif; ?> -->
 
                 </div>
             </div>
