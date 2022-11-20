@@ -9,7 +9,8 @@ server {
     port_in_redirect off;
 
     location / {
-       try_files $uri $uri/ /index.php?$args;
+        index  index.php index.html index.htm hostingstart.html;
+        try_files $uri $uri/ /index.php?$args;
     }
 
     # redirect server error pages to the static page /50x.html
