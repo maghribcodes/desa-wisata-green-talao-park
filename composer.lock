@@ -214,7 +214,7 @@
             "require-dev": {
                 "codeigniter4/codeigniter4-standard": "^1.0",
                 "codeigniter4/devkit": "^1.0",
-                "codeigniter4/framework": "^4.1",
+                "codeigniter4/framework": "^4.2",
                 "mockery/mockery": "^1.0"
             },
             "type": "library",
